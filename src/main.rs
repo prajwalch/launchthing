@@ -1,5 +1,11 @@
+use gtk::glib;
+use gtk::glib::clone;
 use gtk::prelude::*;
-use gtk::{glib, Application, ApplicationWindow, SearchEntry};
+use gtk::Application;
+use gtk::ApplicationWindow;
+use gtk::Orientation;
+use gtk::SearchEntry;
+use gtk::Text;
 
 const APP_ID: &str = "org.gtk_rs.la";
 
@@ -23,9 +29,46 @@ fn build_window(app: &Application) {
 
 /// Builds the container box of all the widgets necessary for an app
 fn build_box_of_all_widgets() -> gtk::Box {
-    let search_box = SearchEntry::builder().hexpand(true).build();
-    let gtk_box = gtk::Box::builder().build();
-    gtk_box.append(&search_box);
+    let container = gtk::Box::builder()
+        .orientation(Orientation::Vertical)
+        .build();
 
-    gtk_box
+    let search_box = SearchEntry::builder().hexpand(true).build();
+    container.append(&search_box);
+
+    // TODO: Implement a custom container box to display search results
+    let search_results = gtk::Box::builder()
+        .orientation(Orientation::Vertical)
+        .build();
+    container.append(&search_results);
+
+    search_box.connect_search_changed(
+        clone!(@weak container, @weak search_results => move |term| {
+            let term = term.text();
+            let matched_terms = get_matched_terms(&term);
+
+            if term.is_empty() || matched_terms.is_empty() {
+                // TODO: container box of search results should be clear instead of hiding it
+                search_results.hide();
+                return;
+            }
+            for term in matched_terms {
+                // FIXME: Temporary reference should not be use to create text widget
+                //        because it makes impossible to remove them later from container
+                search_results.append(&Text::builder().text(term).build());
+            }
+        }),
+    );
+
+    container
+}
+
+fn get_matched_terms(term: &str) -> Vec<&str> {
+    let fake = vec!["Obs", "Clion", "Vim", "Nvim", "Visual Studio Code"];
+
+    if fake.contains(&term) {
+        fake
+    } else {
+        vec![]
+    }
 }
