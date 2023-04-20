@@ -10,15 +10,15 @@ fn main() -> glib::ExitCode {
 }
 
 fn build_window(app: &Application) {
-    let window = ApplicationWindow::builder()
+    ApplicationWindow::builder()
         .application(app)
         .title("la")
         .height_request(50)
         .width_request(500)
         .resizable(false)
         .child(&build_widgets_box())
-        .build();
-    window.present();
+        .build()
+        .present();
 }
 
 /// Builds the container box with all the widgets necessary for an app
