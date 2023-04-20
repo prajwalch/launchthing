@@ -16,13 +16,13 @@ fn build_window(app: &Application) {
         .height_request(50)
         .width_request(500)
         .resizable(false)
-        .child(&build_widgets_box())
+        .child(&build_box_of_all_widgets())
         .build()
         .present();
 }
 
-/// Builds the container box with all the widgets necessary for an app
-fn build_widgets_box() -> gtk::Box {
+/// Builds the container box of all the widgets necessary for an app
+fn build_box_of_all_widgets() -> gtk::Box {
     let search_box = SearchEntry::builder().hexpand(true).build();
     let gtk_box = gtk::Box::builder().build();
     gtk_box.append(&search_box);
