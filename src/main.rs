@@ -4,8 +4,6 @@ use gtk::glib;
 use gtk::glib::clone;
 use gtk::prelude::*;
 
-use crate::search_results::SearchResults;
-
 const APP_ID: &str = "com.prajwalch.la";
 
 fn main() -> glib::ExitCode {
@@ -31,12 +29,8 @@ fn build_box_of_all_widgets() -> gtk::Box {
     let container = gtk::Box::builder()
         .orientation(gtk::Orientation::Vertical)
         .build();
-
     let search_box = gtk::SearchEntry::builder().hexpand(true).build();
-    container.append(&search_box);
-
-    let search_results = SearchResults::new();
-    container.append(&search_results);
+    let search_results = search_results::SearchResults::new();
 
     search_box.connect_search_changed(
         clone!(@weak container, @weak search_results => move |term| {
@@ -53,7 +47,8 @@ fn build_box_of_all_widgets() -> gtk::Box {
             }
         }),
     );
-
+    container.append(&search_box);
+    container.append(&search_results);
     container
 }
 
