@@ -1,3 +1,5 @@
+mod search_results;
+
 use gtk::glib;
 use gtk::glib::clone;
 use gtk::prelude::*;
@@ -6,6 +8,8 @@ use gtk::ApplicationWindow;
 use gtk::Orientation;
 use gtk::SearchEntry;
 use gtk::Text;
+
+use crate::search_results::SearchResults;
 
 const APP_ID: &str = "org.gtk_rs.la";
 
@@ -36,10 +40,7 @@ fn build_box_of_all_widgets() -> gtk::Box {
     let search_box = SearchEntry::builder().hexpand(true).build();
     container.append(&search_box);
 
-    // TODO: Implement a custom container box to display search results
-    let search_results = gtk::Box::builder()
-        .orientation(Orientation::Vertical)
-        .build();
+    let search_results = SearchResults::new();
     container.append(&search_results);
 
     search_box.connect_search_changed(
@@ -48,14 +49,12 @@ fn build_box_of_all_widgets() -> gtk::Box {
             let matched_terms = get_matched_terms(&term);
 
             if term.is_empty() || matched_terms.is_empty() {
-                // TODO: container box of search results should be clear instead of hiding it
-                search_results.hide();
+                search_results.clear_all();
                 return;
             }
             for term in matched_terms {
-                // FIXME: Temporary reference should not be use to create text widget
-                //        because it makes impossible to remove them later from container
-                search_results.append(&Text::builder().text(term).build());
+                // TODO: Instead of passing individual text change it to take matched terms directly
+                search_results.append_new(Text::builder().text(term).build());
             }
         }),
     );
