@@ -6,7 +6,7 @@ use gtk::prelude::*;
 
 use crate::search_results::SearchResults;
 
-const APP_ID: &str = "org.gtk_rs.la";
+const APP_ID: &str = "com.prajwalch.la";
 
 fn main() -> glib::ExitCode {
     let app = gtk::Application::builder().application_id(APP_ID).build();
