@@ -3,24 +3,19 @@ mod search_results;
 use gtk::glib;
 use gtk::glib::clone;
 use gtk::prelude::*;
-use gtk::Application;
-use gtk::ApplicationWindow;
-use gtk::Orientation;
-use gtk::SearchEntry;
-use gtk::Text;
 
 use crate::search_results::SearchResults;
 
 const APP_ID: &str = "org.gtk_rs.la";
 
 fn main() -> glib::ExitCode {
-    let app = Application::builder().application_id(APP_ID).build();
+    let app = gtk::Application::builder().application_id(APP_ID).build();
     app.connect_activate(build_window);
     app.run()
 }
 
-fn build_window(app: &Application) {
-    ApplicationWindow::builder()
+fn build_window(app: &gtk::Application) {
+    gtk::ApplicationWindow::builder()
         .application(app)
         .title("la")
         .height_request(50)
@@ -34,10 +29,10 @@ fn build_window(app: &Application) {
 /// Builds the container box of all the widgets necessary for an app
 fn build_box_of_all_widgets() -> gtk::Box {
     let container = gtk::Box::builder()
-        .orientation(Orientation::Vertical)
+        .orientation(gtk::Orientation::Vertical)
         .build();
 
-    let search_box = SearchEntry::builder().hexpand(true).build();
+    let search_box = gtk::SearchEntry::builder().hexpand(true).build();
     container.append(&search_box);
 
     let search_results = SearchResults::new();
@@ -54,7 +49,7 @@ fn build_box_of_all_widgets() -> gtk::Box {
             }
             for term in matched_terms {
                 // TODO: Instead of passing individual text change it to take matched terms directly
-                search_results.append_new(Text::builder().text(term).build());
+                search_results.append_new(gtk::Text::builder().text(term).build());
             }
         }),
     );
