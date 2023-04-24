@@ -45,16 +45,13 @@ impl SearchWindow {
 
         search_action.connect_activate(clone!(@weak search_results => move |_state, variant| {
             if let Some(variant) = variant {
-                let search_query = variant.get::<String>().unwrap_or_default();
+                // Clear previous results
+                search_results.clear();
 
+                let search_query = variant.get::<String>().unwrap_or_default();
                 if search_query.is_empty() {
-                    // Clear previous results
-                    search_results.clear();
                     return;
                 }
-
-                // FIXME: If two queries (ex: `ab` and `abc`) gives same result than avoid same
-                //        results from being pushed
                 if let Some(results) = get_matched_terms(&search_query) {
                     for result in results {
                         search_results.push(gtk::Text::builder().text(&result).build());
