@@ -4,6 +4,8 @@ use gtk::gio;
 use gtk::glib::{self, clone};
 use gtk::prelude::*;
 
+use crate::search_results::SearchResults;
+
 #[derive(Clone)]
 pub struct SearchWindow {
     window: gtk::ApplicationWindow,
@@ -46,9 +48,15 @@ impl SearchWindow {
         search_box
     }
 
-    fn build_search_results_container(&self) -> crate::search_results::SearchResults {
+    fn build_search_results_container(&self) -> SearchResults {
+        let search_results = SearchResults::new();
+        let search_action = self.create_search_action(&search_results);
+        self.window.add_action(&search_action);
+        search_results
+    }
+
+    fn create_search_action(&self, search_results: &SearchResults) -> gio::SimpleAction {
         let installed_apps = Rc::clone(&self.installed_apps);
-        let search_results = crate::search_results::SearchResults::new();
         let search_action = gio::SimpleAction::new("search", Some(&String::static_variant_type()));
 
         search_action.connect_activate(clone!(@weak search_results => move |_state, variant| {
@@ -76,7 +84,6 @@ impl SearchWindow {
                 }
             }
         }));
-        self.window.add_action(&search_action);
-        search_results
+        search_action
     }
 }
