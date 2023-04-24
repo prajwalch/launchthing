@@ -10,6 +10,7 @@ use crate::search_results::SearchResults;
 pub struct SearchWindow {
     window: gtk::ApplicationWindow,
     container: gtk::Box,
+    search_results: SearchResults,
     installed_apps: Rc<Vec<gio::AppInfo>>,
 }
 
@@ -26,14 +27,15 @@ impl SearchWindow {
         Self {
             window,
             container,
+            search_results: SearchResults::new(),
             installed_apps: Rc::new(gio::AppInfo::all()),
         }
     }
 
     pub fn present(&self) {
         self.container.append(&self.build_search_box_widget());
-        self.container
-            .append(&self.build_search_results_container());
+        self.container.append(&self.search_results);
+        self.window.add_action(&self.create_search_action());
         self.window.present();
     }
 
@@ -48,15 +50,9 @@ impl SearchWindow {
         search_box
     }
 
-    fn build_search_results_container(&self) -> SearchResults {
-        let search_results = SearchResults::new();
-        let search_action = self.create_search_action(&search_results);
-        self.window.add_action(&search_action);
-        search_results
-    }
-
-    fn create_search_action(&self, search_results: &SearchResults) -> gio::SimpleAction {
+    fn create_search_action(&self) -> gio::SimpleAction {
         let installed_apps = Rc::clone(&self.installed_apps);
+        let search_results = &self.search_results;
         let search_action = gio::SimpleAction::new("search", Some(&String::static_variant_type()));
 
         search_action.connect_activate(clone!(@weak search_results => move |_state, variant| {
