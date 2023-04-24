@@ -15,7 +15,7 @@ impl SearchResults {
         glib::Object::builder().build()
     }
 
-    pub fn append_new(&self, text: gtk::Text) {
+    pub fn push(&self, text: gtk::Text) {
         let mut results = self.imp().results.borrow_mut();
         results.push(text);
         self.append(results.last().unwrap());

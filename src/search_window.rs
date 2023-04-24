@@ -56,8 +56,8 @@ impl SearchWindow {
                 // FIXME: If two queries (ex: `ab` and `abc`) gives same result than avoid same
                 //        results from being pushed
                 if let Some(results) = get_matched_terms(&search_query) {
-                   for result in results {
-                        search_results.append_new(gtk::Text::builder().text(&result).build());
+                    for result in results {
+                        search_results.push(gtk::Text::builder().text(&result).build());
                     }
                 }
             }
