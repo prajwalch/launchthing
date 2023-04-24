@@ -49,7 +49,7 @@ impl SearchWindow {
 
                 if search_query.is_empty() {
                     // Clear previous results
-                    search_results.clear_all();
+                    search_results.clear();
                     return;
                 }
 

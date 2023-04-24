@@ -21,7 +21,7 @@ impl SearchResults {
         self.append(results.last().unwrap());
     }
 
-    pub fn clear_all(&self) {
+    pub fn clear(&self) {
         let mut previous_results = self.imp().results.borrow_mut();
         for result in previous_results.iter() {
             self.remove(result);
