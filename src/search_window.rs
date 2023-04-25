@@ -9,7 +9,6 @@ use crate::search_results::SearchResults;
 #[derive(Clone)]
 pub struct SearchWindow {
     window: gtk::ApplicationWindow,
-    container: gtk::Box,
     search_results: SearchResults,
     installed_apps: Rc<Vec<gio::AppInfo>>,
 }
@@ -22,24 +21,25 @@ impl SearchWindow {
         window.set_resizable(false);
 
         let container = gtk::Box::new(gtk::Orientation::Vertical, 5);
+        container.append(&Self::build_search_box_widget());
+
+        let search_results = SearchResults::new();
+        container.append(&search_results);
         window.set_child(Some(&container));
 
         Self {
             window,
-            container,
-            search_results: SearchResults::new(),
+            search_results,
             installed_apps: Rc::new(gio::AppInfo::all()),
         }
     }
 
     pub fn present(&self) {
-        self.container.append(&self.build_search_box_widget());
-        self.container.append(&self.search_results);
         self.window.add_action(&self.create_search_action());
         self.window.present();
     }
 
-    fn build_search_box_widget(&self) -> gtk::SearchEntry {
+    fn build_search_box_widget() -> gtk::SearchEntry {
         let search_box = gtk::SearchEntry::builder().hexpand(true).build();
         search_box.connect_search_changed(move |search_box| {
             let search_query = search_box.text().to_string();
