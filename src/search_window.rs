@@ -6,7 +6,6 @@ use gtk::prelude::*;
 
 use crate::search_results::SearchResults;
 
-#[derive(Clone)]
 pub struct SearchWindow {
     window: gtk::ApplicationWindow,
     search_results: SearchResults,
