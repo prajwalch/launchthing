@@ -8,7 +8,7 @@ use crate::search_results::SearchResults;
 
 pub struct SearchWindow {
     window: gtk::ApplicationWindow,
-    scrolled_container: gtk::ScrolledWindow,
+    scrollable_container: gtk::ScrolledWindow,
     search_results: SearchResults,
     installed_apps: Rc<Vec<gio::AppInfo>>,
 }
@@ -35,7 +35,7 @@ impl SearchWindow {
 
         Self {
             window,
-            scrolled_container: scrollable_container,
+            scrollable_container,
             search_results,
             installed_apps: Rc::new(gio::AppInfo::all()),
         }
@@ -58,17 +58,17 @@ impl SearchWindow {
     }
 
     fn create_search_action(&self) -> gio::SimpleAction {
-        let scrolled_container = &self.scrolled_container;
+        let scrollable_container = &self.scrollable_container;
         let search_results = &self.search_results;
         let installed_apps = Rc::clone(&self.installed_apps);
         let search_action = gio::SimpleAction::new("search", Some(&String::static_variant_type()));
 
         search_action.connect_activate(
-            clone!(@weak search_results, @weak scrolled_container => move |_state, variant| {
+            clone!(@weak search_results, @weak scrollable_container => move |_state, variant| {
                 if let Some(variant) = variant {
                     // Clear previous results
                     search_results.clear();
-                    scrolled_container.hide();
+                    scrollable_container.hide();
 
                     let search_query = variant.get::<String>().unwrap_or_default();
                     if search_query.is_empty() {
@@ -90,7 +90,7 @@ impl SearchWindow {
                     for app_name in &query_matched_apps {
                         search_results.push(gtk::Text::builder().text(app_name.as_str()).build());
                     }
-                    scrolled_container.show();
+                    scrollable_container.show();
                 }
             }),
         );
