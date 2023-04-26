@@ -20,7 +20,7 @@ impl SearchWindow {
         window.set_resizable(false);
 
         let container = gtk::Box::new(gtk::Orientation::Vertical, 5);
-        container.append(&Self::build_search_box_widget());
+        container.append(&Self::create_search_box_widget());
 
         let search_results = SearchResults::new();
         container.append(&search_results);
@@ -38,7 +38,7 @@ impl SearchWindow {
         self.window.present();
     }
 
-    fn build_search_box_widget() -> gtk::SearchEntry {
+    fn create_search_box_widget() -> gtk::SearchEntry {
         let search_box = gtk::SearchEntry::builder().hexpand(true).build();
         search_box.connect_search_changed(move |search_box| {
             let search_query = search_box.text().to_string();
