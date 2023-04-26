@@ -414,7 +414,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "la"
+name = "lawnchar"
 version = "0.1.0"
 dependencies = [
  "gtk4",
