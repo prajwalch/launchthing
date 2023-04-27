@@ -5,7 +5,7 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 
 glib::wrapper! {
-    pub struct SearchResults(ObjectSubclass<SearchResultsContainer>)
+    pub struct SearchResults(ObjectSubclass<imp::SearchResultsContainer>)
         @extends gtk::Box, gtk::Widget,
         @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Orientable;
 }
@@ -36,23 +36,27 @@ impl Default for SearchResults {
     }
 }
 
-#[derive(Default)]
-pub struct SearchResultsContainer {
-    pub results: RefCell<Vec<gtk::Text>>,
-}
+mod imp {
+    use super::*;
 
-#[glib::object_subclass]
-impl ObjectSubclass for SearchResultsContainer {
-    const NAME: &'static str = "SearchResultsContainer";
-    type Type = SearchResults;
-    type ParentType = gtk::Box;
-}
-
-impl ObjectImpl for SearchResultsContainer {
-    fn constructed(&self) {
-        self.obj().set_orientation(gtk::Orientation::Vertical);
+    #[derive(Default)]
+    pub struct SearchResultsContainer {
+        pub results: RefCell<Vec<gtk::Text>>,
     }
-}
 
-impl WidgetImpl for SearchResultsContainer {}
-impl BoxImpl for SearchResultsContainer {}
+    #[glib::object_subclass]
+    impl ObjectSubclass for SearchResultsContainer {
+        const NAME: &'static str = "SearchResultsContainer";
+        type Type = SearchResults;
+        type ParentType = gtk::Box;
+    }
+
+    impl ObjectImpl for SearchResultsContainer {
+        fn constructed(&self) {
+            self.obj().set_orientation(gtk::Orientation::Vertical);
+        }
+    }
+
+    impl WidgetImpl for SearchResultsContainer {}
+    impl BoxImpl for SearchResultsContainer {}
+}
