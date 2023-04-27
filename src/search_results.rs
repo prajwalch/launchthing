@@ -15,9 +15,9 @@ impl SearchResults {
         glib::Object::builder().build()
     }
 
-    pub fn push(&self, text: gtk::Text) {
+    pub fn push(&self, result: impl IsA<gtk::Widget>) {
         let mut results = self.imp().results.borrow_mut();
-        results.push(text);
+        results.push(result.as_ref().to_owned());
         self.append(results.last().unwrap());
     }
 
@@ -41,7 +41,7 @@ mod imp {
 
     #[derive(Default)]
     pub struct SearchResultsContainer {
-        pub results: RefCell<Vec<gtk::Text>>,
+        pub results: RefCell<Vec<gtk::Widget>>,
     }
 
     #[glib::object_subclass]
