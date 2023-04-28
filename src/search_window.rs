@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use std::rc::Rc;
 
 use gtk::gio;
@@ -9,7 +10,7 @@ use crate::search_results::SearchResults;
 pub struct SearchWindow {
     window: gtk::ApplicationWindow,
     scrollable_container: gtk::ScrolledWindow,
-    search_results: SearchResults,
+    search_results: Rc<RefCell<SearchResults>>,
     installed_apps: Rc<Vec<gio::AppInfo>>,
 }
 
@@ -29,14 +30,14 @@ impl SearchWindow {
         scrollable_container.set_visible(false);
 
         let search_results = SearchResults::new();
-        scrollable_container.set_child(Some(&search_results));
+        scrollable_container.set_child(Some(search_results.container()));
         container.append(&scrollable_container);
         window.set_child(Some(&container));
 
         Self {
             window,
             scrollable_container,
-            search_results,
+            search_results: Rc::new(RefCell::new(search_results)),
             installed_apps: Rc::new(gio::AppInfo::all()),
         }
     }
@@ -59,13 +60,14 @@ impl SearchWindow {
 
     fn create_search_action(&self) -> gio::SimpleAction {
         let scrollable_container = &self.scrollable_container;
-        let search_results = &self.search_results;
+        let search_results = Rc::clone(&self.search_results);
         let installed_apps = Rc::clone(&self.installed_apps);
         let search_action = gio::SimpleAction::new("search", Some(&String::static_variant_type()));
 
         search_action.connect_activate(
-            clone!(@weak search_results, @weak scrollable_container => move |_state, variant| {
+            clone!(@weak scrollable_container => move |_state, variant| {
                 if let Some(variant) = variant {
+                    let mut search_results = search_results.borrow_mut();
                     // Clear previous results
                     search_results.clear();
                     scrollable_container.hide();
