@@ -2,11 +2,12 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use gtk::gio;
-use gtk::glib::{self, clone};
+use gtk::glib;
 use gtk::prelude::*;
 
 use crate::search_results::SearchResults;
 
+#[derive(Clone)]
 pub struct SearchWindow {
     window: gtk::ApplicationWindow,
     scrollable_container: gtk::ScrolledWindow,
@@ -59,43 +60,55 @@ impl SearchWindow {
     }
 
     fn create_search_action(&self) -> gio::SimpleAction {
-        let scrollable_container = &self.scrollable_container;
-        let search_results = Rc::clone(&self.search_results);
-        let installed_apps = Rc::clone(&self.installed_apps);
+        let search_window = self.clone();
         let search_action = gio::SimpleAction::new("search", Some(&String::static_variant_type()));
 
-        search_action.connect_activate(
-            clone!(@weak scrollable_container => move |_state, variant| {
-                if let Some(variant) = variant {
-                    let mut search_results = search_results.borrow_mut();
-                    // Clear previous results
-                    search_results.clear();
-                    scrollable_container.hide();
-
-                    let search_query = variant.get::<String>().unwrap_or_default();
-                    if search_query.is_empty() {
-                        return;
-                    }
-                    let query_matched_apps = installed_apps.iter().filter_map(|app| {
-                        let app_name = app.name();
-                        if app_name.matches(&search_query).count() != 0 {
-                            Some(app_name)
-                        } else {
-                            None
-                        }
-                    }).collect::<Vec<glib::GString>>();
-
-                    if query_matched_apps.is_empty() {
-                        return;
-                    }
-
-                    for app_name in &query_matched_apps {
-                        search_results.push(gtk::Text::builder().text(app_name.as_str()).build());
-                    }
-                    scrollable_container.show();
-                }
-            }),
-        );
+        search_action.connect_activate(move |state, variant| {
+            search_window.on_search_action_activated(state, variant)
+        });
         search_action
+    }
+
+    fn on_search_action_activated(
+        &self,
+        _state: &gio::SimpleAction,
+        variant: Option<&glib::Variant>,
+    ) {
+        let variant = match variant {
+            Some(variant) => variant,
+            None => return,
+        };
+
+        let search_query = variant.get::<String>().unwrap_or_default();
+        if search_query.is_empty() {
+            return;
+        }
+        // Clear previous results
+        self.search_results.borrow_mut().clear();
+        self.scrollable_container.hide();
+
+        let query_matched_apps = self
+            .installed_apps
+            .iter()
+            .filter_map(|app| {
+                let app_name = app.name();
+                if app_name.matches(&search_query).count() != 0 {
+                    Some(app_name)
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<glib::GString>>();
+
+        if query_matched_apps.is_empty() {
+            return;
+        }
+
+        for app_name in &query_matched_apps {
+            self.search_results
+                .borrow_mut()
+                .push(gtk::Text::builder().text(app_name.as_str()).build());
+        }
+        self.scrollable_container.show();
     }
 }
