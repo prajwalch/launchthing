@@ -21,8 +21,8 @@ impl SearchWindow {
         window.set_width_request(500);
         window.set_resizable(false);
 
-        let container = gtk::Box::new(gtk::Orientation::Vertical, 5);
-        container.append(&Self::create_search_box_widget());
+        let main_container = gtk::Box::new(gtk::Orientation::Vertical, 5);
+        main_container.append(&Self::create_search_box_widget());
 
         let scrollable_container = gtk::ScrolledWindow::new();
         scrollable_container.set_min_content_height(200);
@@ -31,8 +31,8 @@ impl SearchWindow {
 
         let search_results = SearchResults::new();
         scrollable_container.set_child(Some(search_results.container()));
-        container.append(&scrollable_container);
-        window.set_child(Some(&container));
+        main_container.append(&scrollable_container);
+        window.set_child(Some(&main_container));
 
         Self {
             window,
