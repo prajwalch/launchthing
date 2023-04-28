@@ -5,6 +5,7 @@ use gtk::gio;
 use gtk::glib;
 use gtk::prelude::*;
 
+use crate::application_row::ApplicationRow;
 use crate::search_results::SearchResults;
 
 #[derive(Clone)]
@@ -89,24 +90,17 @@ impl SearchWindow {
         let query_matched_apps = self
             .installed_apps
             .iter()
-            .filter_map(|app| {
-                let app_name = app.name();
-                if app_name.matches(&search_query).count() != 0 {
-                    Some(app_name)
-                } else {
-                    None
-                }
-            })
-            .collect::<Vec<glib::GString>>();
+            .filter(|app| app.name().matches(&search_query).count() != 0)
+            .collect::<Vec<&gio::AppInfo>>();
 
         if query_matched_apps.is_empty() {
             return;
         }
 
-        for app_name in &query_matched_apps {
-            self.search_results
-                .borrow_mut()
-                .push(gtk::Text::builder().text(app_name.as_str()).build());
+        for app in query_matched_apps {
+            let application_row = ApplicationRow::new();
+            application_row.set_info(app);
+            self.search_results.borrow_mut().push(application_row);
         }
         self.scrollable_container.show();
     }

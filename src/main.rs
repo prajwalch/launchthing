@@ -1,3 +1,4 @@
+mod application_row;
 mod search_results;
 mod search_window;
 
