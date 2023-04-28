@@ -78,15 +78,14 @@ impl SearchWindow {
             Some(variant) => variant,
             None => return,
         };
+        // Clear previous results
+        self.search_results.borrow_mut().clear();
+        self.scrollable_container.hide();
 
         let search_query = variant.get::<String>().unwrap_or_default();
         if search_query.is_empty() {
             return;
         }
-        // Clear previous results
-        self.search_results.borrow_mut().clear();
-        self.scrollable_container.hide();
-
         let query_matched_apps = self
             .installed_apps
             .iter()
