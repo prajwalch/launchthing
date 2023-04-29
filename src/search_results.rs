@@ -1,9 +1,9 @@
 use gtk::prelude::*;
 
 pub struct SearchResults {
-    widgets: Vec<gtk::Widget>,
-    container: gtk::Box,
     scrollable_container: gtk::ScrolledWindow,
+    container: gtk::Box,
+    widgets: Vec<gtk::Widget>,
 }
 
 impl SearchResults {
@@ -17,9 +17,9 @@ impl SearchResults {
         scrollable_container.set_child(Some(&container));
 
         Self {
-            widgets: Vec::new(),
-            container,
             scrollable_container,
+            container,
+            widgets: Vec::new(),
         }
     }
 
