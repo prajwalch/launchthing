@@ -14,7 +14,7 @@ fn create_icon_widget(app_info: &gio::AppInfo) -> gtk::Image {
     icon.set_margin_bottom(6);
     icon.set_margin_start(6);
     icon.set_margin_end(6);
-    icon.set_pixel_size(48);
+    icon.set_pixel_size(40);
 
     if let Some(app_icon) = app_info.icon() {
         icon.set_from_gicon(&app_icon);
