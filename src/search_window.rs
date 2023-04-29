@@ -95,16 +95,13 @@ impl SearchWindow {
             .installed_apps
             .iter()
             .filter(|app| app.name().matches(&search_query).count() != 0)
-            .collect::<Vec<&gio::AppInfo>>();
+            .map(crate::application_row::create)
+            .collect::<Vec<gtk::Box>>();
 
         if query_matched_apps.is_empty() {
             return;
         }
-
-        for app in query_matched_apps {
-            let application_row = crate::application_row::create(app);
-            self.search_results.borrow_mut().push(application_row);
-        }
+        self.search_results.borrow_mut().show(&query_matched_apps);
         self.scrollable_container.show();
     }
 }

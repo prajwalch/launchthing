@@ -19,9 +19,11 @@ impl SearchResults {
         &self.container
     }
 
-    pub fn push(&mut self, result: impl IsA<gtk::Widget>) {
-        self.childrens.push(result.as_ref().to_owned());
-        self.container.append(self.childrens.last().unwrap());
+    pub fn show(&mut self, results: &[impl IsA<gtk::Widget>]) {
+        for result in results {
+            self.childrens.push(result.as_ref().to_owned());
+            self.container.append(self.childrens.last().unwrap());
+        }
     }
 
     pub fn clear(&mut self) {
