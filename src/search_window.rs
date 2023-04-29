@@ -85,7 +85,7 @@ impl SearchWindow {
         let query_matched_apps = self
             .installed_apps
             .iter()
-            .filter(|app| app.name().matches(&search_query).count() != 0)
+            .filter(|app| app.name().to_lowercase().matches(&search_query).count() != 0)
             .map(crate::application_row::create)
             .collect::<Vec<gtk::Box>>();
 
