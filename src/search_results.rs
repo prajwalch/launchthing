@@ -11,7 +11,7 @@ impl SearchResults {
             container: gtk::Box::builder()
                 .orientation(gtk::Orientation::Vertical)
                 .build(),
-            childrens: vec![],
+            childrens: Vec::new(),
         }
     }
 
