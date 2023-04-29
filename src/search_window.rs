@@ -78,7 +78,7 @@ impl SearchWindow {
         // Clear previous results
         self.search_results.borrow_mut().clear();
 
-        let search_query = variant.get::<String>().unwrap_or_default();
+        let search_query = variant.get::<String>().unwrap_or_default().to_lowercase();
         if search_query.is_empty() {
             return;
         }
