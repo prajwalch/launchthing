@@ -75,9 +75,8 @@ impl SearchWindow {
         _state: &gio::SimpleAction,
         variant: Option<&glib::Variant>,
     ) {
-        let variant = match variant {
-            Some(variant) => variant,
-            None => return,
+        let Some(variant) = variant else {
+            return;
         };
         // Clear previous results
         self.search_results.borrow_mut().clear();
