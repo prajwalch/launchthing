@@ -5,7 +5,6 @@ use gtk::gio;
 use gtk::glib;
 use gtk::prelude::*;
 
-use crate::application_row::ApplicationRow;
 use crate::search_results::SearchResults;
 
 #[derive(Clone)]
@@ -97,8 +96,7 @@ impl SearchWindow {
         }
 
         for app in query_matched_apps {
-            let application_row = ApplicationRow::new();
-            application_row.set_info(app);
+            let application_row = crate::application_row::create(app);
             self.search_results.borrow_mut().push(application_row);
         }
         self.scrollable_container.show();
