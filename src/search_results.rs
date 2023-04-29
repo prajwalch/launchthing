@@ -1,35 +1,45 @@
 use gtk::prelude::*;
 
 pub struct SearchResults {
+    widgets: Vec<gtk::Widget>,
     container: gtk::Box,
-    childrens: Vec<gtk::Widget>,
+    scrollable_container: gtk::ScrolledWindow,
 }
 
 impl SearchResults {
     pub fn new() -> Self {
+        let scrollable_container = gtk::ScrolledWindow::new();
+        scrollable_container.set_min_content_height(200);
+        // Only show it when we get the results later
+        scrollable_container.set_visible(false);
+
+        let container = gtk::Box::new(gtk::Orientation::Vertical, 5);
+        scrollable_container.set_child(Some(&container));
+
         Self {
-            container: gtk::Box::builder()
-                .orientation(gtk::Orientation::Vertical)
-                .build(),
-            childrens: Vec::new(),
+            widgets: Vec::new(),
+            container,
+            scrollable_container,
         }
     }
 
-    pub fn container(&self) -> &gtk::Box {
-        &self.container
+    pub fn container(&self) -> &gtk::ScrolledWindow {
+        &self.scrollable_container
     }
 
     pub fn show(&mut self, results: &[impl IsA<gtk::Widget>]) {
         for result in results {
-            self.childrens.push(result.as_ref().to_owned());
-            self.container.append(self.childrens.last().unwrap());
+            self.widgets.push(result.as_ref().to_owned());
+            self.container.append(self.widgets.last().unwrap());
         }
+        self.scrollable_container.show();
     }
 
     pub fn clear(&mut self) {
-        for result in self.childrens.iter() {
-            self.container.remove(result);
+        for widget in self.widgets.iter() {
+            self.container.remove(widget);
         }
-        self.childrens.clear();
+        self.widgets.clear();
+        self.scrollable_container.hide();
     }
 }

@@ -10,7 +10,6 @@ use crate::search_results::SearchResults;
 #[derive(Clone)]
 pub struct SearchWindow {
     window: gtk::ApplicationWindow,
-    scrollable_container: gtk::ScrolledWindow,
     search_results: Rc<RefCell<SearchResults>>,
     installed_apps: Rc<Vec<gio::AppInfo>>,
 }
@@ -25,14 +24,8 @@ impl SearchWindow {
         let main_container = gtk::Box::new(gtk::Orientation::Vertical, 5);
         main_container.append(&Self::create_search_box_widget());
 
-        let scrollable_container = gtk::ScrolledWindow::new();
-        scrollable_container.set_min_content_height(200);
-        // Only show it when we get the results later
-        scrollable_container.set_visible(false);
-
         let search_results = SearchResults::new();
-        scrollable_container.set_child(Some(search_results.container()));
-        main_container.append(&scrollable_container);
+        main_container.append(search_results.container());
         window.set_child(Some(&main_container));
 
         let installed_apps = gio::AppInfo::all()
@@ -43,7 +36,6 @@ impl SearchWindow {
 
         Self {
             window,
-            scrollable_container,
             search_results: Rc::new(RefCell::new(search_results)),
             installed_apps: Rc::new(installed_apps),
         }
@@ -85,7 +77,6 @@ impl SearchWindow {
         };
         // Clear previous results
         self.search_results.borrow_mut().clear();
-        self.scrollable_container.hide();
 
         let search_query = variant.get::<String>().unwrap_or_default();
         if search_query.is_empty() {
@@ -102,6 +93,5 @@ impl SearchWindow {
             return;
         }
         self.search_results.borrow_mut().show(&query_matched_apps);
-        self.scrollable_container.show();
     }
 }
