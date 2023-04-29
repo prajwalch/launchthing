@@ -35,11 +35,17 @@ impl SearchWindow {
         main_container.append(&scrollable_container);
         window.set_child(Some(&main_container));
 
+        let installed_apps = gio::AppInfo::all()
+            .iter()
+            .filter(|app| app.icon().is_some() && app.should_show())
+            .cloned()
+            .collect::<Vec<gio::AppInfo>>();
+
         Self {
             window,
             scrollable_container,
             search_results: Rc::new(RefCell::new(search_results)),
-            installed_apps: Rc::new(gio::AppInfo::all()),
+            installed_apps: Rc::new(installed_apps),
         }
     }
 
