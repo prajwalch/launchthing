@@ -27,9 +27,9 @@ impl SearchResults {
         &self.scrollable_container
     }
 
-    pub fn show(&mut self, results: &[impl IsA<gtk::Widget>]) {
+    pub fn show<W: IsA<gtk::Widget>>(&mut self, results: &[W]) {
         for result in results {
-            self.widgets.push(result.as_ref().to_owned());
+            self.widgets.push(result.clone().upcast::<gtk::Widget>());
             self.container.append(self.widgets.last().unwrap());
         }
         self.scrollable_container.show();
