@@ -29,10 +29,9 @@ impl SearchResults {
 
     pub fn show<W: IsA<gtk::Widget>>(&mut self, results: &[W]) {
         for result in results {
-            self.widgets.push(result.clone().upcast::<gtk::Widget>());
-        }
-        for widget in &self.widgets {
-            self.container.append(widget);
+            let widget = result.clone().upcast::<gtk::Widget>();
+            self.container.append(&widget);
+            self.widgets.push(widget);
         }
         self.scrollable_container.show();
     }
