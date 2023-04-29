@@ -2,7 +2,7 @@ use gtk::gio;
 use gtk::prelude::*;
 
 pub fn create(app_info: &gio::AppInfo) -> gtk::Box {
-    let container = gtk::Box::new(gtk::Orientation::Horizontal, 12);
+    let container = gtk::Box::new(gtk::Orientation::Horizontal, 5);
     container.append(&create_icon_widget(app_info));
     container.append(&create_name_and_description_widget(app_info));
     container
