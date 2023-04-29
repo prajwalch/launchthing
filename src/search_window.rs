@@ -69,9 +69,11 @@ impl SearchWindow {
 
     fn on_search_action_activated(
         &self,
-        _state: &gio::SimpleAction,
+        state: &gio::SimpleAction,
         variant: Option<&glib::Variant>,
     ) {
+        _ = state;
+
         let Some(variant) = variant else {
             return;
         };
