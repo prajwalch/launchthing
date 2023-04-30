@@ -96,7 +96,7 @@ impl SearchWindow {
         }
         let results = query_matched_apps
             .iter()
-            .map(|app_info| crate::application_row::create(*app_info))
+            .map(|app_info| crate::application_row::create(app_info))
             .collect::<Vec<gtk::ListBoxRow>>();
 
         self.search_results.borrow_mut().show(&results);
