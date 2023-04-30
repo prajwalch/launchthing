@@ -84,20 +84,21 @@ impl SearchWindow {
         if search_query.is_empty() {
             return;
         }
+
         let query_matched_apps = self
             .installed_apps
             .iter()
             .filter(|app| app.name().to_lowercase().matches(&search_query).count() != 0)
             .collect::<Vec<&gio::AppInfo>>();
 
+        if query_matched_apps.is_empty() {
+            return;
+        }
         let results = query_matched_apps
             .iter()
             .map(|app_info| crate::application_row::create(*app_info))
             .collect::<Vec<gtk::ListBoxRow>>();
 
-        if query_matched_apps.is_empty() {
-            return;
-        }
         self.search_results.borrow_mut().show(&results);
     }
 }
