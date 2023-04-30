@@ -1,14 +1,15 @@
 use gtk::gio;
 use gtk::prelude::*;
 
-pub fn create(app_info: &gio::AppInfo) -> gtk::Box {
+pub fn create(app_info: &gio::AppInfo) -> gtk::ListBoxRow {
     let container = gtk::Box::new(gtk::Orientation::Horizontal, 5);
     container.set_margin_top(10);
     container.set_margin_start(10);
     container.set_margin_end(10);
     container.append(&create_icon_widget(app_info));
     container.append(&create_name_and_description_widget(app_info));
-    container
+
+    gtk::ListBoxRow::builder().child(&container).build()
 }
 
 fn create_icon_widget(app_info: &gio::AppInfo) -> gtk::Image {

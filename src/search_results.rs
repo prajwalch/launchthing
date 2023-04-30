@@ -2,8 +2,8 @@ use gtk::prelude::*;
 
 pub struct SearchResults {
     scrollable_container: gtk::ScrolledWindow,
-    container: gtk::Box,
-    widgets: Vec<gtk::Widget>,
+    container: gtk::ListBox,
+    results: Vec<gtk::ListBoxRow>,
 }
 
 impl SearchResults {
@@ -13,13 +13,13 @@ impl SearchResults {
         // Only show it when we get the results later
         scrollable_container.set_visible(false);
 
-        let container = gtk::Box::new(gtk::Orientation::Vertical, 5);
+        let container = gtk::ListBox::new();
         scrollable_container.set_child(Some(&container));
 
         Self {
             scrollable_container,
             container,
-            widgets: Vec::new(),
+            results: Vec::new(),
         }
     }
 
@@ -27,20 +27,20 @@ impl SearchResults {
         &self.scrollable_container
     }
 
-    pub fn show<W: IsA<gtk::Widget>>(&mut self, results: &[W]) {
+    pub fn show(&mut self, results: &[gtk::ListBoxRow]) {
         for result in results {
-            let widget = result.clone().upcast::<gtk::Widget>();
-            self.container.append(&widget);
-            self.widgets.push(widget);
+            let result = result.clone();
+            self.container.append(&result);
+            self.results.push(result);
         }
         self.scrollable_container.show();
     }
 
     pub fn clear(&mut self) {
-        for widget in self.widgets.iter() {
-            self.container.remove(widget);
+        for result in self.results.iter() {
+            self.container.remove(result);
         }
-        self.widgets.clear();
+        self.results.clear();
         self.scrollable_container.hide();
     }
 }
