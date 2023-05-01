@@ -51,9 +51,8 @@ impl SearchResults {
         let handler_id = self.container.connect_row_selected(move |container, row| {
             if let Some(row) = row {
                 results.on_row_selected(row.index() as usize);
-                container
-                    .activate_action("window.close", None)
-                    .expect("`window.close` action should exist");
+                // `window.close`is a built-in action therefore unwrapping is ok
+                container.activate_action("window.close", None).unwrap();
             };
         });
         self.select_handler_id.set(Some(handler_id));
