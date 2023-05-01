@@ -100,6 +100,10 @@ impl SearchWindow {
             .map(crate::application_row::create)
             .collect::<Vec<gtk::ListBoxRow>>();
 
-        self.search_results.borrow_mut().show(&results);
+        self.search_results
+            .borrow_mut()
+            .show(query_matched_apps, &results_rows, |a| {
+                println!("Selected: {}", a.name());
+            });
     }
 }
