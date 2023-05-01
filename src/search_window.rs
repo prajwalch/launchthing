@@ -5,7 +5,7 @@ use gtk::gio;
 use gtk::glib;
 use gtk::prelude::*;
 
-use crate::application_row::AppResults;
+use crate::app_results::AppResults;
 use crate::search_results::SearchResults;
 
 #[derive(Clone)]

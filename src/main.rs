@@ -1,4 +1,4 @@
-mod application_row;
+mod app_results;
 mod search_results;
 mod search_window;
 
