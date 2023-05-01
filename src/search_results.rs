@@ -7,6 +7,7 @@ use gtk::prelude::*;
 pub trait Results {
     fn rows(&self) -> Vec<gtk::ListBoxRow>;
     fn on_row_selected(&self, index: usize);
+    fn is_empty(&self) -> bool;
 }
 
 pub struct SearchResults {
