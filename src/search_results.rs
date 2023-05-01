@@ -4,6 +4,11 @@ use gtk::glib;
 use gtk::glib::PropertySet;
 use gtk::prelude::*;
 
+pub trait Results {
+    fn rows(&self) -> Vec<gtk::ListBoxRow>;
+    fn on_row_selected(&self, index: usize);
+}
+
 pub struct SearchResults {
     scrollable_container: gtk::ScrolledWindow,
     container: gtk::ListBox,
@@ -33,23 +38,16 @@ impl SearchResults {
         &self.scrollable_container
     }
 
-    pub fn show<R, F>(&mut self, results: Vec<R>, results_rows: &[gtk::ListBoxRow], on_selected: F)
-    where
-        R: 'static,
-        F: Fn(&R) + 'static,
-    {
-        for row in results_rows {
-            let result = row.clone();
-            self.container.append(&result);
-            self.results_row.push(result);
+    pub fn show<R: Results + 'static>(&mut self, results: R) {
+        self.results_row.extend(results.rows());
+
+        for row in &self.results_row {
+            self.container.append(row);
         }
         let signal_handler_id = self.container.connect_row_selected(move |_container, row| {
-            let Some(row) = row else {
-                return;
+            if let Some(row) = row {
+                results.on_row_selected(row.index() as usize);
             };
-            if let Some(result) = results.get(row.index() as usize) {
-                on_selected(result);
-            }
         });
         self.selected_handler_id.set(Some(signal_handler_id));
         self.scrollable_container.show();
