@@ -57,8 +57,8 @@ impl SearchResults {
     }
 
     pub fn clear(&mut self) {
-        for result in self.results_rows.iter() {
-            self.container.remove(result);
+        for row in self.results_rows.iter() {
+            self.container.remove(row);
         }
         if let Some(selected_handler_id) = self.selected_handler_id.take() {
             self.container.disconnect(selected_handler_id);
