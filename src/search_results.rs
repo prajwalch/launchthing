@@ -13,7 +13,7 @@ pub struct SearchResults {
     scrollable_container: gtk::ScrolledWindow,
     container: gtk::ListBox,
     results_rows: Vec<gtk::ListBoxRow>,
-    selected_handler_id: RefCell<Option<glib::SignalHandlerId>>,
+    selected_row_handler_id: RefCell<Option<glib::SignalHandlerId>>,
 }
 
 impl SearchResults {
@@ -30,7 +30,7 @@ impl SearchResults {
             scrollable_container,
             container,
             results_rows: Vec::new(),
-            selected_handler_id: RefCell::new(None),
+            selected_row_handler_id: RefCell::new(None),
         }
     }
 
@@ -52,7 +52,7 @@ impl SearchResults {
                     .expect("`window.close` action should exist");
             };
         });
-        self.selected_handler_id.set(Some(signal_handler_id));
+        self.selected_row_handler_id.set(Some(signal_handler_id));
         self.scrollable_container.show();
     }
 
@@ -60,7 +60,7 @@ impl SearchResults {
         for row in self.results_rows.iter() {
             self.container.remove(row);
         }
-        if let Some(selected_handler_id) = self.selected_handler_id.take() {
+        if let Some(selected_handler_id) = self.selected_row_handler_id.take() {
             self.container.disconnect(selected_handler_id);
         }
         self.results_rows.clear();
