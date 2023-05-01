@@ -22,12 +22,12 @@ impl SearchWindow {
         window.set_width_request(500);
         window.set_resizable(false);
 
-        let main_container = gtk::Box::new(gtk::Orientation::Vertical, 5);
-        main_container.append(&Self::create_search_box_widget());
+        let window_container = gtk::Box::new(gtk::Orientation::Vertical, 5);
+        window_container.append(&Self::create_search_box_widget());
 
         let search_results = SearchResults::new();
-        main_container.append(search_results.container());
-        window.set_child(Some(&main_container));
+        window_container.append(search_results.container());
+        window.set_child(Some(&window_container));
 
         let installed_apps = gio::AppInfo::all()
             .iter()
