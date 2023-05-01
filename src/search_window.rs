@@ -2,7 +2,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use gtk::gio;
-use gtk::glib;
 use gtk::prelude::*;
 
 use crate::app_results::AppResults;
@@ -11,6 +10,7 @@ use crate::search_results::SearchResults;
 #[derive(Clone)]
 pub struct SearchWindow {
     window: gtk::ApplicationWindow,
+    container: gtk::Box,
     search_results: Rc<RefCell<SearchResults>>,
     installed_apps: Rc<Vec<gio::AppInfo>>,
 }
@@ -22,63 +22,41 @@ impl SearchWindow {
         window.set_width_request(500);
         window.set_resizable(false);
 
-        let window_container = gtk::Box::new(gtk::Orientation::Vertical, 5);
-        window_container.append(&Self::create_search_box_widget());
-
-        let search_results = SearchResults::new();
-        window_container.append(search_results.container());
-        window.set_child(Some(&window_container));
+        let container = gtk::Box::new(gtk::Orientation::Vertical, 5);
+        window.set_child(Some(&container));
 
         Self {
             window,
-            search_results: Rc::new(RefCell::new(search_results)),
+            container,
+            search_results: Rc::new(RefCell::new(SearchResults::new())),
             installed_apps: Rc::new(get_installed_apps()),
         }
     }
 
     pub fn present(&self) {
-        self.window.add_action(&self.create_search_action());
+        self.container.append(&self.create_search_box_widget());
+        self.container
+            .append(self.search_results.borrow().container());
         self.window.present();
     }
 
-    fn create_search_box_widget() -> gtk::SearchEntry {
+    fn create_search_box_widget(&self) -> gtk::SearchEntry {
+        let search_window = self.clone();
         let search_box = gtk::SearchEntry::builder().hexpand(true).build();
+
         search_box.connect_search_changed(move |search_box| {
-            let search_query = search_box.text().to_string();
-            search_box
-                .activate_action("win.search", Some(&search_query.to_variant()))
-                .expect("search action should exist");
+            search_window.on_search_query_changed(search_box.text().as_str());
         });
         search_box
     }
 
-    fn create_search_action(&self) -> gio::SimpleAction {
-        let search_window = self.clone();
-        let search_action = gio::SimpleAction::new("search", Some(&String::static_variant_type()));
-
-        search_action.connect_activate(move |state, variant| {
-            search_window.on_search_action_activated(state, variant)
-        });
-        search_action
-    }
-
-    fn on_search_action_activated(
-        &self,
-        state: &gio::SimpleAction,
-        variant: Option<&glib::Variant>,
-    ) {
-        _ = state;
-        let Some(variant) = variant else {
-            return;
-        };
-        // Clear previous results
+    fn on_search_query_changed(&self, query: &str) {
         self.search_results.borrow_mut().clear();
 
-        let search_query = variant.get::<String>().unwrap_or_default().to_lowercase();
-        if search_query.is_empty() {
+        if query.is_empty() {
             return;
         }
-        let apps_result = AppResults::new(&search_query, &self.installed_apps);
+        let apps_result = AppResults::new(query, &self.installed_apps);
         self.search_results.borrow_mut().show(apps_result);
     }
 }
