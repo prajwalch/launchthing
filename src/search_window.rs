@@ -87,9 +87,6 @@ impl SearchWindow {
         }
 
         let apps_result = AppResults::new(&search_query, &self.installed_apps);
-        if apps_result.is_empty() {
-            return;
-        }
         self.search_results.borrow_mut().show(apps_result);
     }
 }
