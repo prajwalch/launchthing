@@ -29,16 +29,10 @@ impl SearchWindow {
         window_container.append(search_results.container());
         window.set_child(Some(&window_container));
 
-        let installed_apps = gio::AppInfo::all()
-            .iter()
-            .filter(|app| app.icon().is_some() && app.should_show())
-            .cloned()
-            .collect::<Vec<gio::AppInfo>>();
-
         Self {
             window,
             search_results: Rc::new(RefCell::new(search_results)),
-            installed_apps: Rc::new(installed_apps),
+            installed_apps: Rc::new(get_installed_apps()),
         }
     }
 
@@ -87,4 +81,12 @@ impl SearchWindow {
         let apps_result = AppResults::new(&search_query, &self.installed_apps);
         self.search_results.borrow_mut().show(apps_result);
     }
+}
+
+fn get_installed_apps() -> Vec<gio::AppInfo> {
+    gio::AppInfo::all()
+        .iter()
+        .filter(|app| app.icon().is_some() && app.should_show())
+        .cloned()
+        .collect::<Vec<gio::AppInfo>>()
 }
