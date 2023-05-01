@@ -17,10 +17,6 @@ impl AppResults {
 
         Self { matched_apps }
     }
-
-    pub fn is_empty(&self) -> bool {
-        self.matched_apps.is_empty()
-    }
 }
 
 impl Results for AppResults {
@@ -35,6 +31,10 @@ impl Results for AppResults {
         if let Some(app_info) = self.matched_apps.get(index) {
             println!("Selected: {}", app_info.name());
         }
+    }
+
+    fn is_empty(&self) -> bool {
+        self.matched_apps.is_empty()
     }
 }
 
