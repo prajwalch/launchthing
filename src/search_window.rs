@@ -95,7 +95,7 @@ impl SearchWindow {
         if query_matched_apps.is_empty() {
             return;
         }
-        let results = query_matched_apps
+        let results_rows = query_matched_apps
             .iter()
             .map(|app_info| crate::application_row::create(app_info))
             .collect::<Vec<gtk::ListBoxRow>>();
