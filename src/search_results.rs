@@ -60,8 +60,8 @@ impl SearchResults {
         for row in self.results_rows.iter() {
             self.container.remove(row);
         }
-        if let Some(selected_handler_id) = self.select_handler_id.take() {
-            self.container.disconnect(selected_handler_id);
+        if let Some(handler_id) = self.select_handler_id.take() {
+            self.container.disconnect(handler_id);
         }
         self.results_rows.clear();
         self.scrollable_container.hide();
