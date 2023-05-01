@@ -44,7 +44,7 @@ impl SearchResults {
         for row in &self.results_rows {
             self.container.append(row);
         }
-        let signal_handler_id = self.container.connect_row_selected(move |container, row| {
+        let handler_id = self.container.connect_row_selected(move |container, row| {
             if let Some(row) = row {
                 results.on_row_selected(row.index() as usize);
                 container
@@ -52,7 +52,7 @@ impl SearchResults {
                     .expect("`window.close` action should exist");
             };
         });
-        self.select_handler_id.set(Some(signal_handler_id));
+        self.select_handler_id.set(Some(handler_id));
         self.scrollable_container.show();
     }
 
