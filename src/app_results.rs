@@ -20,6 +20,10 @@ impl AppResults {
 }
 
 impl Results for AppResults {
+    fn is_empty(&self) -> bool {
+        self.matched_apps.is_empty()
+    }
+
     fn rows(&self) -> Vec<gtk::ListBoxRow> {
         self.matched_apps
             .iter()
@@ -31,10 +35,6 @@ impl Results for AppResults {
         if let Some(app_info) = self.matched_apps.get(index) {
             println!("Selected: {}", app_info.name());
         }
-    }
-
-    fn is_empty(&self) -> bool {
-        self.matched_apps.is_empty()
     }
 }
 
