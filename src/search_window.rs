@@ -74,7 +74,6 @@ impl SearchWindow {
         variant: Option<&glib::Variant>,
     ) {
         _ = state;
-
         let Some(variant) = variant else {
             return;
         };
@@ -85,7 +84,6 @@ impl SearchWindow {
         if search_query.is_empty() {
             return;
         }
-
         let apps_result = AppResults::new(&search_query, &self.installed_apps);
         self.search_results.borrow_mut().show(apps_result);
     }
