@@ -40,6 +40,9 @@ impl SearchResults {
     }
 
     pub fn show<R: Results + 'static>(&mut self, results: R) {
+        if results.is_empty() {
+            return;
+        }
         self.results_rows.extend(results.rows());
 
         for row in &self.results_rows {
