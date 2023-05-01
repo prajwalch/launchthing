@@ -1,6 +1,43 @@
 use gtk::gio;
 use gtk::prelude::*;
 
+use crate::search_results::Results;
+
+pub struct AppResults {
+    matched_apps: Vec<gio::AppInfo>,
+}
+
+impl AppResults {
+    pub fn new(search_query: &str, installed_apps: &[gio::AppInfo]) -> Self {
+        let matched_apps = installed_apps
+            .iter()
+            .filter(|app| app.name().to_lowercase().matches(search_query).count() != 0)
+            .cloned()
+            .collect::<Vec<gio::AppInfo>>();
+
+        Self { matched_apps }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.matched_apps.is_empty()
+    }
+}
+
+impl Results for AppResults {
+    fn rows(&self) -> Vec<gtk::ListBoxRow> {
+        self.matched_apps
+            .iter()
+            .map(create)
+            .collect::<Vec<gtk::ListBoxRow>>()
+    }
+
+    fn on_row_selected(&self, index: usize) {
+        if let Some(app_info) = self.matched_apps.get(index) {
+            println!("Selected: {}", app_info.name());
+        }
+    }
+}
+
 pub fn create(app_info: &gio::AppInfo) -> gtk::ListBoxRow {
     let container = gtk::Box::new(gtk::Orientation::Horizontal, 5);
     container.set_margin_top(10);

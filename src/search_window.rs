@@ -5,6 +5,7 @@ use gtk::gio;
 use gtk::glib;
 use gtk::prelude::*;
 
+use crate::application_row::AppResults;
 use crate::search_results::SearchResults;
 
 #[derive(Clone)]
@@ -85,25 +86,10 @@ impl SearchWindow {
             return;
         }
 
-        let query_matched_apps = self
-            .installed_apps
-            .iter()
-            .filter(|app| app.name().to_lowercase().matches(&search_query).count() != 0)
-            .cloned()
-            .collect::<Vec<gio::AppInfo>>();
-
-        if query_matched_apps.is_empty() {
+        let apps_result = AppResults::new(&search_query, &self.installed_apps);
+        if apps_result.is_empty() {
             return;
         }
-        let results_rows = query_matched_apps
-            .iter()
-            .map(crate::application_row::create)
-            .collect::<Vec<gtk::ListBoxRow>>();
-
-        self.search_results
-            .borrow_mut()
-            .show(query_matched_apps, &results_rows, |a| {
-                println!("Selected: {}", a.name());
-            });
+        self.search_results.borrow_mut().show(apps_result);
     }
 }
