@@ -89,7 +89,8 @@ impl SearchWindow {
             .installed_apps
             .iter()
             .filter(|app| app.name().to_lowercase().matches(&search_query).count() != 0)
-            .collect::<Vec<&gio::AppInfo>>();
+            .cloned()
+            .collect::<Vec<gio::AppInfo>>();
 
         if query_matched_apps.is_empty() {
             return;
