@@ -27,7 +27,7 @@ impl Results for AppResults {
     fn rows(&self) -> Vec<gtk::ListBoxRow> {
         self.matched_apps
             .iter()
-            .map(create)
+            .map(create_list_box_row)
             .collect::<Vec<gtk::ListBoxRow>>()
     }
 
@@ -38,7 +38,7 @@ impl Results for AppResults {
     }
 }
 
-pub fn create(app_info: &gio::AppInfo) -> gtk::ListBoxRow {
+fn create_list_box_row(app_info: &gio::AppInfo) -> gtk::ListBoxRow {
     let container = gtk::Box::new(gtk::Orientation::Horizontal, 5);
     container.set_margin_top(10);
     container.set_margin_start(10);
