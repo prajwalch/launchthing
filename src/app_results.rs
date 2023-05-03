@@ -32,10 +32,11 @@ impl Results for AppResults {
     }
 
     fn on_row_selected(&self, index: usize) {
-        if let Some(app) = self.matched_apps.get(index) {
-            let context = gio::AppLaunchContext::new();
-            app.launch(&[], Some(&context))
-                .unwrap_or_else(|err| eprintln!("error: Failed to launch {}: {err}", app.name()));
+        let Some(app) = self.matched_apps.get(index) else {
+            return;
+        };
+        if let Err(e) = app.launch(&[], Some(&gio::AppLaunchContext::new())) {
+            eprintln!("error: Failed to launch {}: {e}", app.name())
         }
     }
 }
