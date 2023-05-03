@@ -51,6 +51,7 @@ impl SearchWindow {
     }
 
     fn on_search_query_changed(&self, query: &str) {
+        // Clear previous results
         self.search_results.borrow_mut().clear();
 
         if query.is_empty() {
