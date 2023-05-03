@@ -32,27 +32,26 @@ impl Results for AppResults {
     }
 
     fn on_row_selected(&self, index: usize) {
-        if let Some(app_info) = self.matched_apps.get(index) {
+        if let Some(app) = self.matched_apps.get(index) {
             let context = gio::AppLaunchContext::new();
-            app_info.launch(&[], Some(&context)).unwrap_or_else(|err| {
-                eprintln!("error: Failed to launch {}: {err}", app_info.name())
-            });
+            app.launch(&[], Some(&context))
+                .unwrap_or_else(|err| eprintln!("error: Failed to launch {}: {err}", app.name()));
         }
     }
 }
 
-fn create_list_box_row(app_info: &gio::AppInfo) -> gtk::ListBoxRow {
+fn create_list_box_row(app: &gio::AppInfo) -> gtk::ListBoxRow {
     let container = gtk::Box::new(gtk::Orientation::Horizontal, 5);
     container.set_margin_top(10);
     container.set_margin_start(10);
     container.set_margin_end(10);
-    container.append(&create_icon_widget(app_info));
-    container.append(&create_name_and_description_widget(app_info));
+    container.append(&create_icon_widget(app));
+    container.append(&create_name_and_description_widget(app));
 
     gtk::ListBoxRow::builder().child(&container).build()
 }
 
-fn create_icon_widget(app_info: &gio::AppInfo) -> gtk::Image {
+fn create_icon_widget(app: &gio::AppInfo) -> gtk::Image {
     let icon = gtk::Image::new();
     icon.set_margin_top(6);
     icon.set_margin_bottom(6);
@@ -60,18 +59,18 @@ fn create_icon_widget(app_info: &gio::AppInfo) -> gtk::Image {
     icon.set_margin_end(6);
     icon.set_pixel_size(40);
 
-    if let Some(app_icon) = app_info.icon() {
+    if let Some(app_icon) = app.icon() {
         icon.set_from_gicon(&app_icon);
     }
     icon
 }
 
-fn create_name_and_description_widget(app_info: &gio::AppInfo) -> gtk::Box {
+fn create_name_and_description_widget(app: &gio::AppInfo) -> gtk::Box {
     let text_container = gtk::Box::new(gtk::Orientation::Vertical, 0);
     text_container.set_margin_top(6);
     text_container.set_margin_bottom(6);
 
-    let name = gtk::Label::new(Some(&app_info.name()));
+    let name = gtk::Label::new(Some(&app.name()));
     name.set_halign(gtk::Align::Start);
     name.set_css_classes(&["title-4"]);
     text_container.append(&name);
@@ -81,7 +80,7 @@ fn create_name_and_description_widget(app_info: &gio::AppInfo) -> gtk::Box {
     description.set_wrap(true);
     description.set_css_classes(&["body"]);
 
-    if let Some(app_des) = app_info.description() {
+    if let Some(app_des) = app.description() {
         description.set_text(&app_des);
     }
     text_container.append(&description);
