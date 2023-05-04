@@ -31,7 +31,7 @@ impl Results for AppResults {
             .collect::<Vec<gtk::ListBoxRow>>()
     }
 
-    fn on_row_selected(&self, index: usize) {
+    fn on_item_selected(&self, index: usize) {
         let Some(app) = self.matched_apps.get(index) else {
             return;
         };

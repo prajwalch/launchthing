@@ -8,7 +8,8 @@ pub trait Results {
     fn is_empty(&self) -> bool;
     /// Creates list items by binding the data
     fn create_list_items(&self) -> Vec<gtk::ListBoxRow>;
-    fn on_row_selected(&self, index: usize);
+    /// Callback for when an item is selected by user
+    fn on_item_selected(&self, index: usize);
 }
 
 pub struct SearchResults {
@@ -51,7 +52,7 @@ impl SearchResults {
         }
         let handler_id = self.container.connect_row_selected(move |container, row| {
             if let Some(row) = row {
-                results.on_row_selected(row.index() as usize);
+                results.on_item_selected(row.index() as usize);
                 // `window.close`is a built-in action therefore unwrapping is ok
                 container.activate_action("window.close", None).unwrap();
             };
