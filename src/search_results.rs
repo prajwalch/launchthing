@@ -6,7 +6,8 @@ use gtk::prelude::*;
 
 pub trait Results {
     fn is_empty(&self) -> bool;
-    fn rows(&self) -> Vec<gtk::ListBoxRow>;
+    /// Creates list items by binding the data
+    fn create_list_items(&self) -> Vec<gtk::ListBoxRow>;
     fn on_row_selected(&self, index: usize);
 }
 
@@ -43,7 +44,7 @@ impl SearchResults {
         if results.is_empty() {
             return;
         }
-        self.items.extend(results.rows());
+        self.items.extend(results.create_list_items());
 
         for item in &self.items {
             self.container.append(item);

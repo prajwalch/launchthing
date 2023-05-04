@@ -24,7 +24,7 @@ impl Results for AppResults {
         self.matched_apps.is_empty()
     }
 
-    fn rows(&self) -> Vec<gtk::ListBoxRow> {
+    fn create_list_items(&self) -> Vec<gtk::ListBoxRow> {
         self.matched_apps
             .iter()
             .map(create_list_box_row)
