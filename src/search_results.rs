@@ -50,9 +50,9 @@ impl SearchResults {
         for item in &self.items {
             self.container.append(item);
         }
-        let handler_id = self.container.connect_row_selected(move |container, row| {
-            if let Some(row) = row {
-                results.on_item_selected(row.index() as usize);
+        let handler_id = self.container.connect_row_selected(move |container, item| {
+            if let Some(item) = item {
+                results.on_item_selected(item.index() as usize);
                 // `window.close`is a built-in action therefore unwrapping is ok
                 container.activate_action("window.close", None).unwrap();
             };
