@@ -9,7 +9,7 @@ pub trait Results {
     /// Creates list items by binding the data
     fn create_list_items(&self) -> Vec<gtk::ListBoxRow>;
     /// Callback for when an item is selected by user
-    fn on_item_selected(&self, index: usize);
+    fn on_item_selected(&self, item_index: usize);
 }
 
 pub struct SearchResults {
