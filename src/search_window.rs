@@ -5,6 +5,7 @@ use gtk::gio;
 use gtk::prelude::*;
 
 use crate::app_results::AppResults;
+use crate::path_results::PathResults;
 use crate::search_results::SearchResults;
 
 #[derive(Clone)]
@@ -57,6 +58,13 @@ impl SearchWindow {
         if query.is_empty() {
             return;
         }
+
+        if query.starts_with('~') || query.starts_with('/') {
+            let path_results = PathResults::new(query);
+            self.search_results.borrow_mut().show(path_results);
+            return;
+        }
+
         let app_results = AppResults::new(query, &self.installed_apps);
         self.search_results.borrow_mut().show(app_results);
     }
