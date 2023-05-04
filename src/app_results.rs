@@ -31,8 +31,8 @@ impl Results for AppResults {
             .collect::<Vec<gtk::ListBoxRow>>()
     }
 
-    fn on_item_selected(&self, index: usize) {
-        let Some(app) = self.matched_apps.get(index) else {
+    fn on_item_selected(&self, item_index: usize) {
+        let Some(app) = self.matched_apps.get(item_index) else {
             return;
         };
         if let Err(e) = app.launch(&[], Some(&gio::AppLaunchContext::new())) {
