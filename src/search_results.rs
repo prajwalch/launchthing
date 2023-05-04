@@ -13,7 +13,7 @@ pub trait Results {
 pub struct SearchResults {
     scrollable_container: gtk::ScrolledWindow,
     container: gtk::ListBox,
-    results_rows: Vec<gtk::ListBoxRow>,
+    items: Vec<gtk::ListBoxRow>,
     select_handler_id: RefCell<Option<glib::SignalHandlerId>>,
 }
 
@@ -30,7 +30,7 @@ impl SearchResults {
         Self {
             scrollable_container,
             container,
-            results_rows: Vec::new(),
+            items: Vec::new(),
             select_handler_id: RefCell::new(None),
         }
     }
@@ -43,10 +43,10 @@ impl SearchResults {
         if results.is_empty() {
             return;
         }
-        self.results_rows.extend(results.rows());
+        self.items.extend(results.rows());
 
-        for row in &self.results_rows {
-            self.container.append(row);
+        for item in &self.items {
+            self.container.append(item);
         }
         let handler_id = self.container.connect_row_selected(move |container, row| {
             if let Some(row) = row {
@@ -60,13 +60,13 @@ impl SearchResults {
     }
 
     pub fn clear(&mut self) {
-        for row in self.results_rows.iter() {
-            self.container.remove(row);
+        for item in self.items.iter() {
+            self.container.remove(item);
         }
         if let Some(handler_id) = self.select_handler_id.take() {
             self.container.disconnect(handler_id);
         }
-        self.results_rows.clear();
+        self.items.clear();
         self.scrollable_container.hide();
     }
 }
