@@ -5,7 +5,7 @@ mod search_window;
 use gtk::glib;
 use gtk::prelude::*;
 
-const APP_ID: &str = "com.prajwalch.lawnchar";
+const APP_ID: &str = "com.github.prajwalch.kauai";
 
 fn main() -> glib::ExitCode {
     let app = gtk::Application::builder().application_id(APP_ID).build();
