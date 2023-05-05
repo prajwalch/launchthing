@@ -50,7 +50,7 @@ impl SearchResults {
         for item in &self.items {
             self.container.append(item);
         }
-        let handler_id = self.container.connect_row_selected(move |container, item| {
+        let handler_id = self.container.connect_row_selected(move |_, item| {
             if let Some(item) = item {
                 results.on_item_selected(item);
             };
