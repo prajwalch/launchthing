@@ -38,7 +38,7 @@ impl Results for AppResults {
         if let Err(e) = app.launch(&[], Some(&item.display().app_launch_context())) {
             eprintln!("error: Failed to launch {}: {e}", app.name());
         }
-        // `window.close`is a built-in action therefore unwrapping is ok
+        // `window.close` is a built-in action therefore unwrapping is ok
         item.activate_action("window.close", None).unwrap();
     }
 }
