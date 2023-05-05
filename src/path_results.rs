@@ -33,7 +33,7 @@ impl Results for PathResults {
         Vec::from([item])
     }
 
-    fn on_item_selected(&self, _item_index: usize) {
+    fn on_item_selected(&self, _item: &gtk::ListBoxRow) {
         todo!()
     }
 }
