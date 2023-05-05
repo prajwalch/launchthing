@@ -31,13 +31,15 @@ impl Results for AppResults {
             .collect::<Vec<gtk::ListBoxRow>>()
     }
 
-    fn on_item_selected(&self, item_index: usize) {
-        let Some(app) = self.matched_apps.get(item_index) else {
+    fn on_item_selected(&self, item: &gtk::ListBoxRow) {
+        let Some(app) = self.matched_apps.get(item.index() as usize) else {
             return;
         };
-        if let Err(e) = app.launch(&[], Some(&gio::AppLaunchContext::new())) {
-            eprintln!("error: Failed to launch {}: {e}", app.name())
+        if let Err(e) = app.launch(&[], Some(&item.display().app_launch_context())) {
+            eprintln!("error: Failed to launch {}: {e}", app.name());
         }
+        // // `window.close`is a built-in action therefore unwrapping is ok
+        item.activate_action("window.close", None).unwrap();
     }
 }
 

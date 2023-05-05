@@ -9,7 +9,7 @@ pub trait Results {
     /// Creates list items by binding the data
     fn create_list_items(&self) -> Vec<gtk::ListBoxRow>;
     /// Callback for when an item is selected by user
-    fn on_item_selected(&self, item_index: usize);
+    fn on_item_selected(&self, item: &gtk::ListBoxRow);
 }
 
 pub struct SearchResults {
@@ -52,9 +52,7 @@ impl SearchResults {
         }
         let handler_id = self.container.connect_row_selected(move |container, item| {
             if let Some(item) = item {
-                results.on_item_selected(item.index() as usize);
-                // `window.close`is a built-in action therefore unwrapping is ok
-                container.activate_action("window.close", None).unwrap();
+                results.on_item_selected(item);
             };
         });
         self.select_handler_id.set(Some(handler_id));
