@@ -1,3 +1,3 @@
-# Kauai (name not fixed)
+# launchthing
 
 is a WIP linux application launcher.
