@@ -52,9 +52,9 @@ impl SearchResults {
         }
         let handler_id = self
             .list_container
-            .connect_row_selected(move |container, item| {
+            .connect_row_selected(move |list_container, item| {
                 if let Some(item) = item {
-                    container.unselect_row(item);
+                    list_container.unselect_row(item);
                     results.on_item_selected(item);
                 };
             });
