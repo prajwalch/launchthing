@@ -64,7 +64,6 @@ impl SearchWindow {
             self.search_results.borrow_mut().show(path_results);
             return;
         }
-
         let app_results = AppResults::new(query, &self.installed_apps);
         self.search_results.borrow_mut().show(app_results);
     }
