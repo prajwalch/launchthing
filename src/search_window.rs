@@ -36,10 +36,10 @@ impl SearchWindow {
         }
     }
 
+    #[rustfmt::skip]
     pub fn present(&self) {
         self.container.append(&self.create_search_box_widget());
-        self.container
-            .append(self.search_results.borrow().container());
+        self.container.append(self.search_results.borrow().container());
         self.window.present();
     }
 
