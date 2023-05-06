@@ -39,7 +39,7 @@ impl Results for PathResults {
         if let Some(basename) = child_path.file_name() {
             let basename = basename.to_string_lossy().to_string();
             item.activate_action("win.change-query", Some(&basename.to_variant()))
-                .expect("change-query should exist");
+                .expect("action `change-query` should exist");
         }
     }
 }
