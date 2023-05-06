@@ -26,12 +26,12 @@ impl SearchResults {
         // Only show it when we get the results later
         scrollable_container.set_visible(false);
 
-        let container = gtk::ListBox::new();
-        scrollable_container.set_child(Some(&container));
+        let list_container = gtk::ListBox::new();
+        scrollable_container.set_child(Some(&list_container));
 
         Self {
             scrollable_container,
-            list_container: container,
+            list_container,
             items: Vec::new(),
             select_handler_id: RefCell::new(None),
         }
