@@ -2,6 +2,8 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use gtk::gio;
+use gtk::glib;
+use gtk::glib::clone;
 use gtk::prelude::*;
 
 use crate::app_results::AppResults;
@@ -48,6 +50,9 @@ impl SearchWindow {
         search_box.connect_search_changed(move |search_box| {
             search_window.on_search_query_changed(search_box.text().as_str());
         });
+
+        #[rustfmt::skip]
+        self.window.add_action(&create_change_query_action(&search_box));
         search_box
     }
 
@@ -75,4 +80,31 @@ fn get_installed_apps() -> Vec<gio::AppInfo> {
         .filter(|app| app.icon().is_some() && app.should_show())
         .cloned()
         .collect::<Vec<gio::AppInfo>>()
+}
+
+/// NOTE: For now this action is only being used by [PathResults] item
+///       not sure whether it will be useful for others in future.
+fn create_change_query_action(search_box: &gtk::SearchEntry) -> gio::SimpleAction {
+    let change_query_action =
+        gio::SimpleAction::new("change-query", Some(&String::static_variant_type()));
+
+    change_query_action.connect_activate(clone!(@weak search_box => move |_, variant| {
+        let Some(variant) = variant else {
+            return;
+        };
+        let Some(new_query) = variant.get::<String>() else {
+            return;
+        };
+        let mut current_query = search_box.text().to_string();
+
+        if !current_query.ends_with('/') {
+            current_query.push('/');
+        }
+        current_query.push_str(&new_query);
+        // Replace currently showed query with newly created query
+        search_box.set_text(&current_query);
+        // Move cursor to end
+        search_box.set_position(-1);
+    }));
+    change_query_action
 }
