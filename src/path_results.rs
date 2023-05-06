@@ -60,6 +60,5 @@ fn create_icon_widget(_path: &Path) -> gtk::Image {
 fn create_label_widget(path_name: &str) -> gtk::Label {
     let name = gtk::Label::new(Some(path_name));
     name.set_halign(gtk::Align::Start);
-    name.set_css_classes(&["title-5"]);
     name
 }
