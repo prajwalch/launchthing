@@ -82,7 +82,7 @@ fn get_installed_apps() -> Vec<gio::AppInfo> {
         .collect::<Vec<gio::AppInfo>>()
 }
 
-/// NOTE: For now this action is only being used by [PathResults] item
+/// NOTE: For now this action is being only used by [PathResults] item
 ///       not sure whether it will be useful for others in future.
 fn create_change_query_action(search_box: &gtk::SearchEntry) -> gio::SimpleAction {
     let change_query_action =
