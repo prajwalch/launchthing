@@ -59,17 +59,18 @@ impl SearchWindow {
     fn on_search_query_changed(&self, query: &str) {
         // Clear previous results
         self.search_results.borrow_mut().clear();
+        let query = query.to_lowercase();
 
         if query.is_empty() {
             return;
         }
 
         if query.starts_with('~') || query.starts_with('/') {
-            let path_results = PathResults::new(query);
+            let path_results = PathResults::new(&query);
             self.search_results.borrow_mut().show(path_results);
             return;
         }
-        let app_results = AppResults::new(query, &self.installed_apps);
+        let app_results = AppResults::new(&query, &self.installed_apps);
         self.search_results.borrow_mut().show(app_results);
     }
 }
