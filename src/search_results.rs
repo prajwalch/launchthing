@@ -63,6 +63,8 @@ impl SearchResults {
     }
 
     pub fn clear(&mut self) {
+        self.scrollable_container.hide();
+
         for item in self.items.iter() {
             self.list_container.remove(item);
         }
@@ -70,6 +72,5 @@ impl SearchResults {
             self.list_container.disconnect(handler_id);
         }
         self.items.clear();
-        self.scrollable_container.hide();
     }
 }
