@@ -71,6 +71,7 @@ impl SearchResults {
         if let Some(handler_id) = self.select_handler_id.take() {
             self.list_container.disconnect(handler_id);
         }
+        self.list_container.set_height_request(0);
         self.items.clear();
     }
 }
