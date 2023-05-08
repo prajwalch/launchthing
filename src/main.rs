@@ -10,6 +10,8 @@ const APP_ID: &str = "com.github.prajwalch.launchthing";
 
 fn main() -> glib::ExitCode {
     let app = gtk::Application::builder().application_id(APP_ID).build();
+    app.set_accels_for_action("window.close", &["Escape"]);
+
     app.connect_activate(|app| {
         let window = search_window::SearchWindow::new(app);
         window.present();
