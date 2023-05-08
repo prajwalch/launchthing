@@ -29,7 +29,7 @@ impl Results for PathResults {
     fn create_list_items(&self) -> Vec<Item> {
         self.child_paths
             .iter()
-            .map(|child_path| create_list_box_row(child_path))
+            .map(|child_path| create_list_item(child_path))
             .collect()
     }
 
@@ -45,7 +45,7 @@ impl Results for PathResults {
     }
 }
 
-fn create_list_box_row(child_path: &Path) -> Item {
+fn create_list_item(child_path: &Path) -> Item {
     let container = gtk::Box::new(gtk::Orientation::Horizontal, 5);
     container.append(&create_icon_widget(child_path));
 
