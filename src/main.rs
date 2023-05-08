@@ -6,7 +6,7 @@ mod search_window;
 use gtk::glib;
 use gtk::prelude::*;
 
-const APP_ID: &str = "com.github.prajwalch.kauai";
+const APP_ID: &str = "com.github.prajwalch.launchthing";
 
 fn main() -> glib::ExitCode {
     let app = gtk::Application::builder().application_id(APP_ID).build();
