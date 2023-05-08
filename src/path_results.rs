@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 use gtk::prelude::*;
 
+use crate::search_results::Item;
 use crate::search_results::Results;
 
 #[allow(dead_code)]
@@ -25,14 +26,14 @@ impl Results for PathResults {
         self.child_paths.is_empty()
     }
 
-    fn create_list_items(&self) -> Vec<gtk::ListBoxRow> {
+    fn create_list_items(&self) -> Vec<Item> {
         self.child_paths
             .iter()
             .map(|child_path| create_list_box_row(child_path))
             .collect()
     }
 
-    fn on_item_selected(&self, item: &gtk::ListBoxRow) {
+    fn on_item_selected(&self, item: &Item) {
         let Some(child_path) = self.child_paths.get(item.index() as usize) else {
             return;
         };
@@ -44,13 +45,13 @@ impl Results for PathResults {
     }
 }
 
-fn create_list_box_row(child_path: &Path) -> gtk::ListBoxRow {
+fn create_list_box_row(child_path: &Path) -> Item {
     let container = gtk::Box::new(gtk::Orientation::Horizontal, 5);
     container.append(&create_icon_widget(child_path));
 
     let path_name = child_path.file_name().unwrap_or_default().to_string_lossy();
     container.append(&create_label_widget(&path_name));
-    gtk::ListBoxRow::builder().child(&container).build()
+    Item::builder().child(&container).build()
 }
 
 fn create_icon_widget(_path: &Path) -> gtk::Image {

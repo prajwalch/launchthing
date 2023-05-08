@@ -4,18 +4,20 @@ use gtk::glib;
 use gtk::glib::PropertySet;
 use gtk::prelude::*;
 
+pub type Item = gtk::ListBoxRow;
+
 pub trait Results {
     fn is_empty(&self) -> bool;
     /// Creates list items by binding the data
-    fn create_list_items(&self) -> Vec<gtk::ListBoxRow>;
+    fn create_list_items(&self) -> Vec<Item>;
     /// Callback for when an item is selected by user
-    fn on_item_selected(&self, item: &gtk::ListBoxRow);
+    fn on_item_selected(&self, item: &Item);
 }
 
 pub struct SearchResults {
     scrollable_container: gtk::ScrolledWindow,
     list_container: gtk::ListBox,
-    items: Vec<gtk::ListBoxRow>,
+    items: Vec<Item>,
     select_handler_id: RefCell<Option<glib::SignalHandlerId>>,
 }
 

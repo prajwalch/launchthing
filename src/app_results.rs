@@ -1,6 +1,7 @@
 use gtk::gio;
 use gtk::prelude::*;
 
+use crate::search_results::Item;
 use crate::search_results::Results;
 
 pub struct AppResults {
@@ -24,14 +25,14 @@ impl Results for AppResults {
         self.matched_apps.is_empty()
     }
 
-    fn create_list_items(&self) -> Vec<gtk::ListBoxRow> {
+    fn create_list_items(&self) -> Vec<Item> {
         self.matched_apps
             .iter()
             .map(create_list_box_row)
-            .collect::<Vec<gtk::ListBoxRow>>()
+            .collect::<Vec<Item>>()
     }
 
-    fn on_item_selected(&self, item: &gtk::ListBoxRow) {
+    fn on_item_selected(&self, item: &Item) {
         let Some(app) = self.matched_apps.get(item.index() as usize) else {
             return;
         };
@@ -43,7 +44,7 @@ impl Results for AppResults {
     }
 }
 
-fn create_list_box_row(app: &gio::AppInfo) -> gtk::ListBoxRow {
+fn create_list_box_row(app: &gio::AppInfo) -> Item {
     let container = gtk::Box::new(gtk::Orientation::Horizontal, 5);
     container.set_margin_top(10);
     container.set_margin_start(10);
@@ -51,7 +52,7 @@ fn create_list_box_row(app: &gio::AppInfo) -> gtk::ListBoxRow {
     container.append(&create_icon_widget(app));
     container.append(&create_name_and_description_widget(app));
 
-    gtk::ListBoxRow::builder().child(&container).build()
+    Item::builder().child(&container).build()
 }
 
 fn create_icon_widget(app: &gio::AppInfo) -> gtk::Image {
