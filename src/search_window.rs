@@ -21,7 +21,6 @@ pub struct SearchWindow {
 impl SearchWindow {
     pub fn new(app: &gtk::Application) -> Self {
         let window = gtk::ApplicationWindow::new(app);
-        window.set_height_request(50);
         window.set_width_request(500);
         window.set_resizable(false);
         window.set_decorated(false);
