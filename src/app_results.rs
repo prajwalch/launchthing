@@ -76,12 +76,12 @@ fn create_name_and_description_widget(app: &gio::AppInfo) -> gtk::Box {
 
     let name = gtk::Label::new(Some(&app.name()));
     name.set_halign(gtk::Align::Start);
-    name.set_css_classes(&["title-4"]);
     text_container.append(&name);
 
     let description = gtk::Label::new(None);
     description.set_halign(gtk::Align::Start);
     description.set_wrap(true);
+    description.set_opacity(0.5);
     description.set_css_classes(&["body"]);
 
     if let Some(app_des) = app.description() {
