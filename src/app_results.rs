@@ -46,9 +46,9 @@ impl Results for AppResults {
 
 fn create_list_item(app: &gio::AppInfo) -> Item {
     let container = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-    container.set_margin_top(10);
+    container.set_margin_top(3);
     container.set_margin_start(10);
-    container.set_margin_end(10);
+    container.set_margin_end(3);
     container.append(&create_icon_widget(app));
     container.append(&create_name_and_description_widget(app));
 
