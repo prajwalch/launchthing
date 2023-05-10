@@ -1,15 +1,10 @@
 @define-color bg_color #272727;
 @define-color border_color #424242;
-@define-color border_color_focused #A40000;
 
 window {
-    border: 1px solid @border_color_focused;
+    border: 1px solid @border_color;
     border-radius: 5px;
     background-color: @main_bg;
-}
-
-window:backdrop {
-    border: 1px solid @border_color;
 }
 
 window > box {
