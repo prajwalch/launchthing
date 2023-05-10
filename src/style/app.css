@@ -7,6 +7,10 @@ window {
     background-color: @main-bg;
 }
 
+window > box {
+    background-color: @bg-color;
+}
+
 entry.search {
     outline: none;
     border: none;
