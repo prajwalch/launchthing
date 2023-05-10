@@ -25,7 +25,7 @@ impl SearchWindow {
         window.set_resizable(false);
         window.set_decorated(false);
 
-        let container = gtk::Box::new(gtk::Orientation::Vertical, 5);
+        let container = gtk::Box::new(gtk::Orientation::Vertical, 0);
         window.set_child(Some(&container));
 
         Self {
