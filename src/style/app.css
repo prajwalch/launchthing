@@ -1,3 +1,7 @@
 entry.search {
+    outline: none;
+    border: none;
+    border-radius: 0;
     font-size: 20px;
+    box-shadow: none;
 }
