@@ -20,6 +20,5 @@ entry.search {
 }
 
 scrolledwindow {
-    padding: 8px 0;
     border-top: 1px solid @border_color;
 }
