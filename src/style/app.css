@@ -1,5 +1,8 @@
-@define-color bg_color #272727;
-@define-color border_color #424242;
+@define-color main_bg #121212;
+@define-color search_box_bg #1e1e1e;
+@define-color divider rgba(255, 255, 255, 0.12);
+@define-color window_border_color @divider;
+@define-color list_item_hover_bg #112;
 
 window {
     border: 1px solid @border_color;
