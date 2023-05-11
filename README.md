@@ -3,6 +3,6 @@
 is a WIP linux application launcher.
 
 ## Screenshots
-![init](https://github.com/PrajwalCH/launchthing/assets/42384293/e76e9257-3c08-444f-b5ee-76b80a58b2d5)
-![app_search1](https://github.com/PrajwalCH/launchthing/assets/42384293/4d9bb13d-8fb3-4be3-acab-7c5bcadd453e)
-![path_search1](https://github.com/PrajwalCH/launchthing/assets/42384293/9f65c295-7f47-4343-978a-7b688a304177)
+![init](https://github.com/PrajwalCH/launchthing/assets/42384293/f5ed2317-07b1-497f-855f-a8c1d4c33225)
+![app_search](https://github.com/PrajwalCH/launchthing/assets/42384293/cacecb36-cd5b-4937-b55a-785e07fbf5df)
+![path_search](https://github.com/PrajwalCH/launchthing/assets/42384293/d0d768a1-77ea-47e0-b673-b0ae0420403a)
