@@ -18,6 +18,7 @@ entry.search {
     outline: none;
     border: none;
     border-radius: 0;
+    background-color: @search_box_bg;
     font-size: 20px;
     box-shadow: none;
 }
