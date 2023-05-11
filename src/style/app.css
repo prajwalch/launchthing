@@ -26,3 +26,11 @@ entry.search {
 scrolledwindow {
     border-top: 1px solid @divider;
 }
+
+list {
+    background-color: @main_bg;
+}
+
+list > row:hover {
+    background-color: @list_item_hover_bg;
+}
