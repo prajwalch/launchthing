@@ -11,7 +11,7 @@ window {
 }
 
 window > box {
-    background-color: @bg_color;
+    background-color: @main_bg;
 }
 
 entry.search {
