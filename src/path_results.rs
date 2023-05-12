@@ -8,7 +8,6 @@ use gtk::prelude::*;
 use crate::search_results::ListItem;
 use crate::search_results::Results;
 
-#[allow(dead_code)]
 pub struct PathResults {
     child_paths: Vec<PathBuf>,
 }
