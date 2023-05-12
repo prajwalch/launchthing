@@ -37,11 +37,9 @@ impl Results for PathResults {
         let Some(child_path) = self.child_paths.get(item.index() as usize) else {
             return;
         };
-        if let Some(basename) = child_path.file_name() {
-            let basename = basename.to_string_lossy().to_string();
-            item.activate_action("win.change-query", Some(&basename.to_variant()))
-                .expect("action `change-query` should exist");
-        }
+        let child_path = child_path.to_string_lossy().to_string();
+        item.activate_action("win.change-query", Some(&child_path.to_variant()))
+            .expect("action `change-query` should exist");
     }
 }
 

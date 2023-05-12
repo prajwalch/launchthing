@@ -99,14 +99,8 @@ fn create_change_query_action(search_box: &gtk::SearchEntry) -> gio::SimpleActio
         let Some(new_query) = variant.get::<String>() else {
             return;
         };
-        let mut current_query = search_box.text().to_string();
-
-        if !current_query.ends_with('/') {
-            current_query.push('/');
-        }
-        current_query.push_str(&new_query);
         // Replace currently showed query with newly created query
-        search_box.set_text(&current_query);
+        search_box.set_text(&new_query);
         // Move cursor to end
         search_box.set_position(-1);
     }));
