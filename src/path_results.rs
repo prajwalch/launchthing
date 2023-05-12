@@ -1,5 +1,4 @@
 use std::borrow::Borrow;
-use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
 
@@ -14,9 +13,41 @@ pub struct PathResults {
 
 impl PathResults {
     pub fn new(search_query: &str) -> Self {
-        let child_paths: Vec<PathBuf> = fs::read_dir(search_query).map_or(Vec::new(), |entries| {
-            entries.map(|entry| entry.unwrap().path()).collect()
+        let path = PathBuf::from(search_query);
+        let mut child_paths = Vec::new();
+
+        if path.exists() {
+            if let Ok(entries) = path.read_dir() {
+                child_paths.extend(entries.map(|entry| entry.unwrap().path()));
+            }
+            return Self { child_paths };
+        }
+
+        // If no any path exists with given query then try to get directory entries from its parent
+        let (Some(parent), Some(basename)) = (path.parent(), path.file_name()) else {
+          return Self { child_paths };
+        };
+        let basename = basename.to_string_lossy();
+
+        let Ok(parent_entries) = parent.read_dir()  else {
+            return Self { child_paths };
+        };
+        // Only select those entries whose basename contains given basename
+        let matched_entries_iter = parent_entries.filter_map(|entry| {
+            let entry = entry.unwrap();
+
+            if entry
+                .file_name()
+                .to_string_lossy()
+                .contains(basename.as_ref())
+            {
+                Some(entry.path())
+            } else {
+                None
+            }
         });
+
+        child_paths.extend(matched_entries_iter);
         Self { child_paths }
     }
 }
