@@ -29,7 +29,7 @@ fn read_given_path(path: &Path) -> Option<Vec<PathBuf>> {
     let entries = match path.read_dir() {
         Ok(entries) => entries,
         Err(err) => {
-            eprintln!("Unable to read dir `{path:?}: {err}`");
+            eprintln!("error: Unable to read dir `{path:?}`: {err}");
             return None;
         }
     };
