@@ -1,6 +1,7 @@
 use std::borrow::Borrow;
 use std::path::Path;
 use std::path::PathBuf;
+use std::process::Command;
 
 use gtk::prelude::*;
 
@@ -68,9 +69,19 @@ impl Results for PathResults {
         let Some(child_path) = self.child_paths.get(item.index() as usize) else {
             return;
         };
-        let child_path = child_path.to_string_lossy().to_string();
-        item.activate_action("win.change-query", Some(&child_path.to_variant()))
-            .expect("action `change-query` should exist");
+
+        if child_path.is_dir() {
+            let child_path = child_path.to_string_lossy().to_string();
+            item.activate_action("win.change-query", Some(&child_path.to_variant()))
+                .expect("action `change-query` should exist");
+            return;
+        }
+
+        if let Err(err) = Command::new("xdg-open").arg(child_path).status() {
+            eprintln!("Unable to open a file `{child_path:#?}`: {err}");
+        }
+        // `window.close` is a built-in action therefore unwrapping is ok
+        item.activate_action("window.close", None).unwrap();
     }
 }
 
