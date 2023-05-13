@@ -16,7 +16,7 @@ impl PathResults {
     pub fn new(search_query: &str) -> Self {
         let path = PathBuf::from(search_query);
         let child_paths = if path.exists() {
-            read_given_path(&path)
+            read_given_path(&path).unwrap_or_default()
         } else {
             read_parent_of_given_path(&path)
         };
@@ -25,26 +25,29 @@ impl PathResults {
     }
 }
 
-fn read_given_path(path: &Path) -> Vec<PathBuf> {
+fn read_given_path(path: &Path) -> Option<Vec<PathBuf>> {
     let entries = match path.read_dir() {
         Ok(entries) => entries,
         Err(err) => {
             eprintln!("Unable to read dir `{path:?}: {err}`");
-            return Vec::new();
+            return None;
         }
     };
 
-    entries
+    let child_paths = entries
         .filter_map(|entry| {
             let entry = entry.ok()?;
+            let is_hidden = entry.file_name().to_string_lossy().starts_with('.');
 
-            if !entry.file_name().to_string_lossy().starts_with('.') {
+            if !is_hidden {
                 Some(entry.path())
             } else {
                 None
             }
         })
-        .collect()
+        .collect();
+
+    Some(child_paths)
 }
 
 fn read_parent_of_given_path(path: &Path) -> Vec<PathBuf> {
