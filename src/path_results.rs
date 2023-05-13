@@ -16,7 +16,7 @@ impl PathResults {
     pub fn new(search_query: &str) -> Self {
         let path = PathBuf::from(search_query);
         let child_paths = if path.exists() {
-            read_given_path(&path).unwrap_or_default()
+            get_all_child_of_given_path(&path).unwrap_or_default()
         } else {
             read_parent_of_given_path(&path).unwrap_or_default()
         };
@@ -25,7 +25,7 @@ impl PathResults {
     }
 }
 
-fn read_given_path(path: &Path) -> Option<Vec<PathBuf>> {
+fn get_all_child_of_given_path(path: &Path) -> Option<Vec<PathBuf>> {
     let entries = match path.read_dir() {
         Ok(entries) => entries,
         Err(err) => {
