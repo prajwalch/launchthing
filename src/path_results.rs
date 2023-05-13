@@ -18,7 +18,7 @@ impl PathResults {
         let child_paths = if path.exists() {
             read_given_path(&path).unwrap_or_default()
         } else {
-            read_parent_of_given_path(&path)
+            read_parent_of_given_path(&path).unwrap_or_default()
         };
 
         Self { child_paths }
@@ -50,32 +50,35 @@ fn read_given_path(path: &Path) -> Option<Vec<PathBuf>> {
     Some(child_paths)
 }
 
-fn read_parent_of_given_path(path: &Path) -> Vec<PathBuf> {
-    // If no any path exists with given query then try to get directory entries from its parent
-    let (Some(parent), Some(basename)) = (path.parent(), path.file_name()) else {
-        return Vec::new();
-    };
-    let basename = basename.to_string_lossy();
+fn read_parent_of_given_path(path: &Path) -> Option<Vec<PathBuf>> {
+    let parent = path.parent()?;
+    let basename = path.file_name()?.to_string_lossy();
 
-    let Ok(parent_entries) = parent.read_dir()  else {
-        return Vec::new();
+    let dir_entries = match parent.read_dir() {
+        Ok(entries) => entries,
+        Err(err) => {
+            eprintln!("error: Unable to read parent directory of `{path:?}`: {err}");
+            return None;
+        }
     };
     // Only select those entries whose basename contains given basename
-    parent_entries
+    let child_paths = dir_entries
         .filter_map(|entry| {
-            let entry = entry.unwrap();
-
-            if entry
+            let entry = entry.ok()?;
+            let matches_basename = entry
                 .file_name()
                 .to_string_lossy()
-                .contains(basename.as_ref())
-            {
+                .contains(basename.as_ref());
+
+            if matches_basename {
                 Some(entry.path())
             } else {
                 None
             }
         })
-        .collect()
+        .collect();
+
+    Some(child_paths)
 }
 
 impl Results for PathResults {
