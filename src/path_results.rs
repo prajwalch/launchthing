@@ -18,25 +18,9 @@ impl PathResults {
         let mut child_paths = Vec::new();
 
         if path.exists() {
-            let entries = match path.read_dir() {
-                Ok(entries) => entries,
-                Err(err) => {
-                    eprintln!("Unable to read dir `{path:?}: {err}`");
-                    return Self { child_paths };
-                }
+            return Self {
+                child_paths: read_given_path(&path),
             };
-
-            let entries = entries.filter_map(|entry| {
-                let entry = entry.ok()?;
-
-                if !entry.file_name().to_string_lossy().starts_with('.') {
-                    Some(entry.path())
-                } else {
-                    None
-                }
-            });
-            child_paths.extend(entries);
-            return Self { child_paths };
         }
 
         // If no any path exists with given query then try to get directory entries from its parent
@@ -66,6 +50,28 @@ impl PathResults {
         child_paths.extend(matched_entries_iter);
         Self { child_paths }
     }
+}
+
+fn read_given_path(path: &Path) -> Vec<PathBuf> {
+    let entries = match path.read_dir() {
+        Ok(entries) => entries,
+        Err(err) => {
+            eprintln!("Unable to read dir `{path:?}: {err}`");
+            return Vec::new();
+        }
+    };
+
+    entries
+        .filter_map(|entry| {
+            let entry = entry.ok()?;
+
+            if !entry.file_name().to_string_lossy().starts_with('.') {
+                Some(entry.path())
+            } else {
+                None
+            }
+        })
+        .collect()
 }
 
 impl Results for PathResults {
