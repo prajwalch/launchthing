@@ -18,7 +18,7 @@ impl PathResults {
         let child_paths = if path.exists() {
             get_all_child_of_given_path(&path).unwrap_or_default()
         } else {
-            read_parent_of_given_path(&path).unwrap_or_default()
+            get_all_matching_child_of_parent(&path).unwrap_or_default()
         };
 
         Self { child_paths }
@@ -50,7 +50,7 @@ fn get_all_child_of_given_path(path: &Path) -> Option<Vec<PathBuf>> {
     Some(child_paths)
 }
 
-fn read_parent_of_given_path(path: &Path) -> Option<Vec<PathBuf>> {
+fn get_all_matching_child_of_parent(path: &Path) -> Option<Vec<PathBuf>> {
     let parent = path.parent()?;
     let basename = path.file_name()?.to_string_lossy();
 
