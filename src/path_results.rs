@@ -15,40 +15,15 @@ pub struct PathResults {
 impl PathResults {
     pub fn new(search_query: &str) -> Self {
         let path = PathBuf::from(search_query);
-        let mut child_paths = Vec::new();
-
         if path.exists() {
-            return Self {
+            Self {
                 child_paths: read_given_path(&path),
-            };
-        }
-
-        // If no any path exists with given query then try to get directory entries from its parent
-        let (Some(parent), Some(basename)) = (path.parent(), path.file_name()) else {
-          return Self { child_paths };
-        };
-        let basename = basename.to_string_lossy();
-
-        let Ok(parent_entries) = parent.read_dir()  else {
-            return Self { child_paths };
-        };
-        // Only select those entries whose basename contains given basename
-        let matched_entries_iter = parent_entries.filter_map(|entry| {
-            let entry = entry.unwrap();
-
-            if entry
-                .file_name()
-                .to_string_lossy()
-                .contains(basename.as_ref())
-            {
-                Some(entry.path())
-            } else {
-                None
             }
-        });
-
-        child_paths.extend(matched_entries_iter);
-        Self { child_paths }
+        } else {
+            Self {
+                child_paths: read_parent_of_given_path(&path),
+            }
+        }
     }
 }
 
@@ -66,6 +41,34 @@ fn read_given_path(path: &Path) -> Vec<PathBuf> {
             let entry = entry.ok()?;
 
             if !entry.file_name().to_string_lossy().starts_with('.') {
+                Some(entry.path())
+            } else {
+                None
+            }
+        })
+        .collect()
+}
+
+fn read_parent_of_given_path(path: &Path) -> Vec<PathBuf> {
+    // If no any path exists with given query then try to get directory entries from its parent
+    let (Some(parent), Some(basename)) = (path.parent(), path.file_name()) else {
+        return Vec::new();
+    };
+    let basename = basename.to_string_lossy();
+
+    let Ok(parent_entries) = parent.read_dir()  else {
+        return Vec::new();
+    };
+    // Only select those entries whose basename contains given basename
+    parent_entries
+        .filter_map(|entry| {
+            let entry = entry.unwrap();
+
+            if entry
+                .file_name()
+                .to_string_lossy()
+                .contains(basename.as_ref())
+            {
                 Some(entry.path())
             } else {
                 None
