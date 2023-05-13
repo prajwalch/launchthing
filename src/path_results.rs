@@ -15,15 +15,13 @@ pub struct PathResults {
 impl PathResults {
     pub fn new(search_query: &str) -> Self {
         let path = PathBuf::from(search_query);
-        if path.exists() {
-            Self {
-                child_paths: read_given_path(&path),
-            }
+        let child_paths = if path.exists() {
+            read_given_path(&path)
         } else {
-            Self {
-                child_paths: read_parent_of_given_path(&path),
-            }
-        }
+            read_parent_of_given_path(&path)
+        };
+
+        Self { child_paths }
     }
 }
 
