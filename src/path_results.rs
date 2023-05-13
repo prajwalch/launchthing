@@ -18,9 +18,24 @@ impl PathResults {
         let mut child_paths = Vec::new();
 
         if path.exists() {
-            if let Ok(entries) = path.read_dir() {
-                child_paths.extend(entries.map(|entry| entry.unwrap().path()));
-            }
+            let entries = match path.read_dir() {
+                Ok(entries) => entries,
+                Err(err) => {
+                    eprintln!("Unable to read dir `{path:?}: {err}`");
+                    return Self { child_paths };
+                }
+            };
+
+            let entries = entries.filter_map(|entry| {
+                let entry = entry.ok()?;
+
+                if !entry.file_name().to_string_lossy().starts_with('.') {
+                    Some(entry.path())
+                } else {
+                    None
+                }
+            });
+            child_paths.extend(entries);
             return Self { child_paths };
         }
 
