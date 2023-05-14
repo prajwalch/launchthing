@@ -1,7 +1,6 @@
 use std::borrow::Borrow;
 use std::fs::{DirEntry, ReadDir};
-use std::path::Path;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use gtk::prelude::*;
