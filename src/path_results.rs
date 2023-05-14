@@ -33,11 +33,9 @@ fn get_all_child_of_given_path(path: &Path) -> Option<Vec<PathBuf>> {
             return None;
         }
     };
-
     let child_paths = collect_entries_path(entries, |entry| {
         !entry.file_name().to_string_lossy().starts_with('.')
     });
-
     Some(child_paths)
 }
 
@@ -59,7 +57,6 @@ fn get_all_matching_child_of_parent(path: &Path) -> Option<Vec<PathBuf>> {
             .to_string_lossy()
             .contains(basename.as_ref())
     });
-
     Some(child_paths)
 }
 
