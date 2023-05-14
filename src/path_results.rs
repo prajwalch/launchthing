@@ -50,7 +50,7 @@ fn get_all_matching_child_of_parent(path: &Path) -> Option<Vec<PathBuf>> {
             return None;
         }
     };
-    // Only select those entries whose basename contains given basename
+    // Only select those entries whose name contains given path's basename
     let child_paths = collect_entries_path(dir_entries, |entry| {
         entry
             .file_name()
