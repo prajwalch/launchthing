@@ -1,5 +1,5 @@
 mod app_results;
-mod path_results;
+mod file_browser;
 mod search_results;
 mod search_window;
 

@@ -8,11 +8,11 @@ use gtk::prelude::*;
 use crate::search_results::ListItem;
 use crate::search_results::Results;
 
-pub struct PathResults {
+pub struct FileBrowser {
     child_paths: Vec<PathBuf>,
 }
 
-impl PathResults {
+impl FileBrowser {
     pub fn new(search_query: &str) -> Self {
         let path = PathBuf::from(search_query);
         let child_paths = if path.exists() {
@@ -76,7 +76,7 @@ where
         .collect()
 }
 
-impl Results for PathResults {
+impl Results for FileBrowser {
     fn is_empty(&self) -> bool {
         self.child_paths.is_empty()
     }

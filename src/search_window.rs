@@ -7,7 +7,7 @@ use gtk::glib::clone;
 use gtk::prelude::*;
 
 use crate::app_results::AppResults;
-use crate::path_results::PathResults;
+use crate::file_browser::FileBrowser;
 use crate::search_results::SearchResults;
 
 #[derive(Clone)]
@@ -69,8 +69,8 @@ impl SearchWindow {
         }
 
         if query.starts_with('~') || query.starts_with('/') {
-            let path_results = PathResults::new(&query);
-            self.search_results.borrow_mut().show(path_results);
+            let file_browser = FileBrowser::new(&query);
+            self.search_results.borrow_mut().show(file_browser);
             return;
         }
         let app_results = AppResults::new(&query, &self.installed_apps);
@@ -86,7 +86,7 @@ fn get_installed_apps() -> Vec<gio::AppInfo> {
         .collect::<Vec<gio::AppInfo>>()
 }
 
-/// NOTE: For now this action is being only used by [PathResults] item
+/// NOTE: For now this action is being only used by [FileBrowser] item
 ///       not sure whether it will be useful for others in future.
 fn create_change_query_action(search_box: &gtk::SearchEntry) -> gio::SimpleAction {
     let change_query_action =
