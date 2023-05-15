@@ -1,6 +1,6 @@
 # launchthing
 
-is a WIP linux application launcher.
+is a WIP linux application launcher written in Rust using GTK4.
 
 ## Screenshots
 ![init](https://github.com/PrajwalCH/launchthing/assets/42384293/b2329869-50ca-46f9-8791-b195ff6c3bd1)
