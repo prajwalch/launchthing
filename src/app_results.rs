@@ -12,7 +12,7 @@ impl AppResults {
     pub fn new(search_query: &str, installed_apps: &[gio::AppInfo]) -> Self {
         let matched_apps = installed_apps
             .iter()
-            .filter(|app| app.name().to_lowercase().matches(search_query).count() != 0)
+            .filter(|app| app.name().to_lowercase().contains(search_query))
             .cloned()
             .collect::<Vec<gio::AppInfo>>();
 
