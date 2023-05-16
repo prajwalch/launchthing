@@ -109,7 +109,7 @@ rustup default stable-msvc
 Install Visual Studio Community from [visualstudio.microsoft.com](https://visualstudio.microsoft.com/de/vs/community/).
 Make sure to check the box "Desktop development with C++" during the installation process.
 
-[//]: # (VSInstall Pic)
+![vs-install](https://github.com/PrajwalCH/launchthing/assets/42384293/cf09d57b-bd75-4485-99dd-98a956f9c753)
 
 #### Git
 
