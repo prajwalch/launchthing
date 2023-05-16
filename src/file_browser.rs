@@ -19,12 +19,8 @@ pub struct FileBrowser {
 
 impl FileBrowser {
     pub fn new(search_query: &str) -> Self {
-        let path = if search_query.starts_with('~') {
-            HOME_DIR
-        } else {
-            search_query
-        };
-        let path = PathBuf::from(path);
+        let search_query = search_query.replace('~', HOME_DIR);
+        let path = PathBuf::from(search_query);
         let child_paths = if path.exists() {
             get_all_child_of_given_path(&path).unwrap_or_default()
         } else {
