@@ -70,13 +70,13 @@ fn create_icon_widget(app: &gio::AppInfo) -> gtk::Image {
 }
 
 fn create_name_and_description_widget(app: &gio::AppInfo) -> gtk::Box {
-    let text_container = gtk::Box::new(gtk::Orientation::Vertical, 0);
-    text_container.set_margin_top(6);
-    text_container.set_margin_bottom(6);
+    let container = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    container.set_margin_top(6);
+    container.set_margin_bottom(6);
 
     let name = gtk::Label::new(Some(&app.name()));
     name.set_halign(gtk::Align::Start);
-    text_container.append(&name);
+    container.append(&name);
 
     let description = gtk::Label::new(None);
     description.set_halign(gtk::Align::Start);
@@ -88,6 +88,6 @@ fn create_name_and_description_widget(app: &gio::AppInfo) -> gtk::Box {
     if let Some(app_des) = app.description() {
         description.set_text(&app_des);
     }
-    text_container.append(&description);
-    text_container
+    container.append(&description);
+    container
 }
