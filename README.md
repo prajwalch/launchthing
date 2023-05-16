@@ -5,7 +5,7 @@ is a WIP linux application launcher written in Rust using GTK4.
 ## Screenshots
 
 | ![ss][0] | ![ss][1] |
-| --- | --- |
+|----------|----------|
 | ![ss][2] | ![ss][3] |
 
 [//]: #ImageLinks
