@@ -1,6 +1,6 @@
 # launchthing
 
-is a WIP linux application launcher written in Rust using GTK4.
+launchthing is a cross-platform application launcher written in Rust using GTK4.
 
 ## Screenshots
 
