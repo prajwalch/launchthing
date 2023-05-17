@@ -10,15 +10,15 @@ is a WIP linux application launcher written in Rust using GTK4.
 
 ## Install
 
-Prebuilt binaries are not available for now as the project is in active development phase.
+Prebuilt binaries are not available for now as the project is in early development phase.
 Consider [building it from source](#building-from-source).
 
 ## Building from source
 
 To build the project you must have stable [rust v1.69.0+ installed](https://www.rust-lang.org/tools/install)
-(plus [dependencies](#dependencies)). When installing rust on your Windows OS you have to decide between either using
+(plus [dependencies](#dependencies)). When installing rust on Windows OS, you have to decide between either using
 the **MSVC toolchain** or the **GNU toolchain**. If you don't know which one to choose go for MSVC since that is the
-default one. Once you have all the necessary things installed you can clone the source code and start to compile it.
+default one. Once you have all the necessary things installed you can clone the source code and start to build it.
 
 ```sh
 $ git clone https://github.com/PrajwalCH/launchthing
@@ -29,7 +29,7 @@ $ cargo run
 
 ### Dependencies
 
-The only dependencies you need is GTK4 library which you can install from the package manager provided by your Linux
+The only dependency you need is GTK4 library which you can install from the package manager provided by your Linux
 distro or macOS. [Windows](#windows) needs some extra few steps.
 
 ### Linux
