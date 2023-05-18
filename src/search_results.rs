@@ -56,6 +56,8 @@ impl SearchResults {
         for item in &self.items {
             self.list_container.append(item);
         }
+        // Add an item selected signal handler and store its id so that we can remove it when
+        // clearing results later
         let handler_id = self
             .list_container
             .connect_row_selected(move |list_container, item| {
@@ -74,6 +76,7 @@ impl SearchResults {
         for item in self.items.iter() {
             self.list_container.remove(item);
         }
+        // Remove an item selected signal handler by using previously saved id
         if let Some(handler_id) = self.select_handler_id.take() {
             self.list_container.disconnect(handler_id);
         }
