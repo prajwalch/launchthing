@@ -4,6 +4,10 @@ use gtk::glib;
 use gtk::glib::PropertySet;
 use gtk::prelude::*;
 
+/// The `ListItem` is a displayable widget used to represent an item in a results list.
+///
+/// It can contain only one child widget so when multiple widgets need to be displayed on a single
+/// item the [gtk::Box] container can be used as a child.
 pub type ListItem = gtk::ListBoxRow;
 
 pub trait Results {
