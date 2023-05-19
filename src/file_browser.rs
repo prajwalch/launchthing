@@ -6,7 +6,7 @@ use std::process::Command;
 use gtk::prelude::*;
 
 use crate::search_results::ListItem;
-use crate::search_results::Results;
+use crate::search_results::Mode;
 
 const HOME_DIR: &str = env!(
     "HOME",
@@ -82,7 +82,7 @@ where
         .collect()
 }
 
-impl Results for FileBrowser {
+impl Mode for FileBrowser {
     fn is_empty(&self) -> bool {
         self.child_paths.is_empty()
     }

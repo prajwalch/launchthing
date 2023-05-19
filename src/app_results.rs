@@ -2,7 +2,7 @@ use gtk::gio;
 use gtk::prelude::*;
 
 use crate::search_results::ListItem;
-use crate::search_results::Results;
+use crate::search_results::Mode;
 
 pub struct AppResults {
     matched_apps: Vec<gio::AppInfo>,
@@ -20,7 +20,7 @@ impl AppResults {
     }
 }
 
-impl Results for AppResults {
+impl Mode for AppResults {
     fn is_empty(&self) -> bool {
         self.matched_apps.is_empty()
     }

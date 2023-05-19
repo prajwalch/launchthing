@@ -10,7 +10,7 @@ use gtk::prelude::*;
 /// item the [gtk::Box] container can be used as a child.
 pub type ListItem = gtk::ListBoxRow;
 
-pub trait Results {
+pub trait Mode {
     fn is_empty(&self) -> bool;
     /// Creates list items by binding the data
     fn create_list_items(&self) -> Vec<ListItem>;
@@ -47,11 +47,11 @@ impl SearchResults {
         &self.scrollable_container
     }
 
-    pub fn show<R: Results + 'static>(&mut self, results: R) {
-        if results.is_empty() {
+    pub fn show<M: Mode + 'static>(&mut self, mode: M) {
+        if mode.is_empty() {
             return;
         }
-        self.items.extend(results.create_list_items());
+        self.items.extend(mode.create_list_items());
 
         for item in &self.items {
             self.list_container.append(item);
@@ -63,7 +63,7 @@ impl SearchResults {
             .connect_row_selected(move |list_container, item| {
                 if let Some(item) = item {
                     list_container.unselect_row(item);
-                    results.on_item_selected(item);
+                    mode.on_item_selected(item);
                 };
             });
         self.select_handler_id.set(Some(handler_id));
