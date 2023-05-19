@@ -5,8 +5,8 @@ use std::process::Command;
 
 use gtk::prelude::*;
 
+use super::Mode;
 use crate::search_results::ListItem;
-use crate::search_results::Mode;
 
 const HOME_DIR: &str = env!(
     "HOME",

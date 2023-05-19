@@ -4,19 +4,13 @@ use gtk::glib;
 use gtk::glib::PropertySet;
 use gtk::prelude::*;
 
+use crate::modes::Mode;
+
 /// The `ListItem` is a displayable widget used to represent an item in a results list.
 ///
 /// It can contain only one child widget so when multiple widgets need to be displayed on a single
 /// item the [gtk::Box] container can be used as a child.
 pub type ListItem = gtk::ListBoxRow;
-
-pub trait Mode {
-    fn is_empty(&self) -> bool;
-    /// Creates list items by binding the data
-    fn create_list_items(&self) -> Vec<ListItem>;
-    /// Callback for when an item is selected by user
-    fn on_item_selected(&self, item: &ListItem);
-}
 
 pub struct SearchResults {
     scrollable_container: gtk::ScrolledWindow,

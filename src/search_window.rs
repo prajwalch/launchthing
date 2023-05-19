@@ -6,8 +6,8 @@ use gtk::glib;
 use gtk::glib::clone;
 use gtk::prelude::*;
 
-use crate::app_results::AppResults;
-use crate::file_browser::FileBrowser;
+use crate::modes::AppResults;
+use crate::modes::FileBrowser;
 use crate::search_results::SearchResults;
 
 #[derive(Clone)]
