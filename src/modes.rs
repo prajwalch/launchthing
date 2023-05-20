@@ -1,10 +1,10 @@
 mod app_results;
 mod file_browser;
 
-use crate::search_results::ListItem;
-
 pub use app_results::AppResults;
 pub use file_browser::FileBrowser;
+
+pub(self) use crate::search_results::ListItem;
 
 pub trait Mode {
     fn is_empty(&self) -> bool;

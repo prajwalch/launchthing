@@ -1,8 +1,8 @@
 use gtk::gio;
 use gtk::prelude::*;
 
+use super::ListItem;
 use super::Mode;
-use crate::search_results::ListItem;
 
 pub struct AppResults {
     matched_apps: Vec<gio::AppInfo>,
