@@ -9,8 +9,10 @@ pub(self) use crate::search_results::ListItem;
 pub trait Mode {
     /// Checks if any data is present for creating list items
     fn is_empty(&self) -> bool;
+
     /// Creates list items by binding the data
     fn create_list_items(&self) -> Vec<ListItem>;
+
     /// Callback for when an item is selected by user
     fn on_item_selected(&self, item: &ListItem);
 }
