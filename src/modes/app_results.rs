@@ -21,6 +21,15 @@ impl AppResults {
 }
 
 impl Mode for AppResults {
+    fn is_activated(query: &str) -> bool {
+        // File naming conventions for linux and windows
+        //
+        // https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html#guidelines
+        // https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions
+        !query.starts_with(['~', '/', '\\'])
+            && query.contains(|c: char| c.is_alphanumeric() || c == '_' || c == '-' || c == '.')
+    }
+
     fn is_empty(&self) -> bool {
         self.matched_apps.is_empty()
     }

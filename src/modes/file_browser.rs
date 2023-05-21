@@ -83,6 +83,15 @@ where
 }
 
 impl Mode for FileBrowser {
+    fn is_activated(query: &str) -> bool {
+        #[cfg(target_os = "linux")]
+        let slash = '/';
+        #[cfg(target_os = "windows")]
+        let slash = '\\';
+
+        query.starts_with(['~', slash])
+    }
+
     fn is_empty(&self) -> bool {
         self.child_paths.is_empty()
     }

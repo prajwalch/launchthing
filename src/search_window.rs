@@ -6,8 +6,7 @@ use gtk::glib;
 use gtk::glib::clone;
 use gtk::prelude::*;
 
-use crate::modes::AppResults;
-use crate::modes::FileBrowser;
+use crate::modes::{AppResults, FileBrowser, Mode};
 use crate::search_results::SearchResults;
 
 #[derive(Clone)]
@@ -68,13 +67,13 @@ impl SearchWindow {
             return;
         }
 
-        if query.starts_with('~') || query.starts_with('/') {
+        if AppResults::is_activated(&query) {
+            let app_results = AppResults::new(&query, &self.installed_apps);
+            self.search_results.borrow_mut().show(app_results);
+        } else if FileBrowser::is_activated(&query) {
             let file_browser = FileBrowser::new(&query);
             self.search_results.borrow_mut().show(file_browser);
-            return;
         }
-        let app_results = AppResults::new(&query, &self.installed_apps);
-        self.search_results.borrow_mut().show(app_results);
     }
 }
 
