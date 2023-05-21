@@ -8,9 +8,16 @@ use gtk::prelude::*;
 use super::ListItem;
 use super::Mode;
 
+#[cfg(target_os = "linux")]
 const HOME_DIR: &str = env!(
     "HOME",
     "environment variable `$HOME` is not defined on your system"
+);
+
+#[cfg(target_os = "windows")]
+const HOME_DIR: &str = env!(
+    "USERPROFILE",
+    "environment variable `%USERPROFILE%` is not defined on your system"
 );
 
 pub struct FileBrowser {
