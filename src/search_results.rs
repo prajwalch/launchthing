@@ -61,11 +61,11 @@ impl SearchResults {
                 };
             });
         self.select_handler_id.set(Some(handler_id));
-        self.scrollable_container.show();
+        self.scrollable_container.set_visible(true);
     }
 
     pub fn clear(&mut self) {
-        self.scrollable_container.hide();
+        self.scrollable_container.set_visible(false);
 
         for item in self.items.iter() {
             self.list_container.remove(item);
