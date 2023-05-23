@@ -99,8 +99,8 @@ impl Mode for FileBrowser {
         query.starts_with(['~', slash])
     }
 
-    fn is_empty(&self) -> bool {
-        self.child_paths.is_empty()
+    fn contains_data(&self) -> bool {
+        !self.child_paths.is_empty()
     }
 
     fn create_list_items(&self) -> Vec<ListItem> {

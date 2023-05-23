@@ -14,7 +14,7 @@ pub trait Mode {
     fn is_activated(query: &str) -> bool;
 
     /// Checks if any data is present for creating list items
-    fn is_empty(&self) -> bool;
+    fn contains_data(&self) -> bool;
 
     /// Creates list items by binding the data
     fn create_list_items(&self) -> Vec<ListItem>;

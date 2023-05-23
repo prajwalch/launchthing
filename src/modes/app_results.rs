@@ -30,8 +30,8 @@ impl Mode for AppResults {
             && query.contains(|c: char| c.is_alphanumeric() || c == '_' || c == '-' || c == '.')
     }
 
-    fn is_empty(&self) -> bool {
-        self.matched_apps.is_empty()
+    fn contains_data(&self) -> bool {
+        !self.matched_apps.is_empty()
     }
 
     fn create_list_items(&self) -> Vec<ListItem> {

@@ -42,7 +42,7 @@ impl SearchResults {
     }
 
     pub fn show<M: Mode + 'static>(&mut self, mode: M) {
-        if mode.is_empty() {
+        if !mode.contains_data() {
             return;
         }
         self.items.extend(mode.create_list_items());
