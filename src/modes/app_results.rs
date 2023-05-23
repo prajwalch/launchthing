@@ -61,7 +61,9 @@ fn create_list_item(app: &gio::AppInfo) -> ListItem {
     container.append(&create_icon_widget(app));
     container.append(&create_name_and_description_widget(app));
 
-    ListItem::builder().child(&container).build()
+    let list_item = ListItem::new();
+    list_item.set_child(Some(&container));
+    list_item
 }
 
 fn create_icon_widget(app: &gio::AppInfo) -> gtk::Image {
