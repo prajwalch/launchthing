@@ -58,7 +58,10 @@ fn create_list_item(app: &gio::AppInfo) -> ListItem {
     container.set_margin_top(3);
     container.set_margin_start(10);
     container.set_margin_end(3);
-    container.append(&create_icon_widget(app));
+
+    if let Some(icon) = app.icon() {
+        container.append(&create_icon_widget(&icon));
+    }
     container.append(&create_name_and_description_widget(app));
 
     let list_item = ListItem::new();
@@ -66,17 +69,14 @@ fn create_list_item(app: &gio::AppInfo) -> ListItem {
     list_item
 }
 
-fn create_icon_widget(app: &gio::AppInfo) -> gtk::Image {
-    let icon = gtk::Image::new();
+fn create_icon_widget(icon: &gio::Icon) -> gtk::Image {
+    let icon = gtk::Image::from_gicon(icon);
     icon.set_margin_top(6);
     icon.set_margin_bottom(6);
     icon.set_margin_start(6);
     icon.set_margin_end(6);
     icon.set_pixel_size(40);
 
-    if let Some(app_icon) = app.icon() {
-        icon.set_from_gicon(&app_icon);
-    }
     icon
 }
 
