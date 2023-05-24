@@ -136,7 +136,10 @@ fn create_list_item(child_path: &Path) -> ListItem {
 
     let path_name = child_path.file_name().unwrap_or_default().to_string_lossy();
     container.append(&create_label_widget(&path_name));
-    ListItem::builder().child(&container).build()
+
+    let list_item = ListItem::new();
+    list_item.set_child(Some(&container));
+    list_item
 }
 
 fn create_icon_widget(path: &Path) -> gtk::Image {
