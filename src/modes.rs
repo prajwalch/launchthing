@@ -75,9 +75,9 @@ impl ModeRunner {
         // clearing results later
         let handler_id = self
             .result_list
-            .connect_row_selected(move |list_container, item| {
+            .connect_row_selected(move |result_list, item| {
                 if let Some(item) = item {
-                    list_container.unselect_row(item);
+                    result_list.unselect_row(item);
                     mode.on_item_selected(item);
                 };
             });
