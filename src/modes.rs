@@ -47,12 +47,12 @@ impl ModeRunner {
         // Only show it when we get the results later
         scrollable_container.set_visible(false);
 
-        let list_container = gtk::ListBox::new();
-        scrollable_container.set_child(Some(&list_container));
+        let result_list = gtk::ListBox::new();
+        scrollable_container.set_child(Some(&result_list));
 
         Self {
             scrollable_container,
-            result_list: list_container,
+            result_list,
             list_items: Vec::new(),
             select_handler_id: RefCell::new(None),
         }
