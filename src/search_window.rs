@@ -62,11 +62,11 @@ impl SearchWindow {
     fn on_search_query_changed(&self, query: &str) {
         // Clear previous results
         self.search_results.borrow_mut().clear();
-        let query = query.to_lowercase();
 
         if query.is_empty() {
             return;
         }
+        let query = query.to_lowercase();
 
         if AppResults::is_activated(&query) {
             let app_results = AppResults::new(&query, &self.installed_apps);
