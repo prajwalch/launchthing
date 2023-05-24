@@ -10,7 +10,7 @@ use gtk::prelude::*;
 pub use app_results::AppResults;
 pub use file_browser::FileBrowser;
 
-/// The `ListItem` is a displayable widget used to represent an item in a results list.
+/// The `ListItem` is a displayable widget used to represent an item in a result list.
 ///
 /// It can contain only one child widget so when multiple widgets need to be displayed on a single
 /// item the [gtk::Box] container can be used as a child.
