@@ -62,7 +62,7 @@ impl ModeRunner {
         &self.scrollable_container
     }
 
-    pub fn show<M: Mode + 'static>(&mut self, mode: M) {
+    pub fn run<M: Mode + 'static>(&mut self, mode: M) {
         if !mode.contains_data() {
             return;
         }

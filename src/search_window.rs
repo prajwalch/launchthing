@@ -69,10 +69,10 @@ impl SearchWindow {
 
         if AppResults::is_activated(&query) {
             let app_results = AppResults::new(&query, &self.installed_apps);
-            self.mode_runner.borrow_mut().show(app_results);
+            self.mode_runner.borrow_mut().run(app_results);
         } else if FileBrowser::is_activated(&query) {
             let file_browser = FileBrowser::new(&query);
-            self.mode_runner.borrow_mut().show(file_browser);
+            self.mode_runner.borrow_mut().run(file_browser);
         }
     }
 }
