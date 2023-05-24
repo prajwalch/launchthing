@@ -6,14 +6,13 @@ use gtk::glib;
 use gtk::glib::clone;
 use gtk::prelude::*;
 
-use crate::modes::{AppResults, FileBrowser, Mode};
-use crate::search_results::SearchResults;
+use crate::modes::{AppResults, FileBrowser, Mode, ModeRunner};
 
 #[derive(Clone)]
 pub struct SearchWindow {
     window: gtk::ApplicationWindow,
     container: gtk::Box,
-    search_results: Rc<RefCell<SearchResults>>,
+    mode_runner: Rc<RefCell<ModeRunner>>,
     installed_apps: Rc<Vec<gio::AppInfo>>,
 }
 
@@ -31,7 +30,7 @@ impl SearchWindow {
         Self {
             window,
             container,
-            search_results: Rc::new(RefCell::new(SearchResults::new())),
+            mode_runner: Rc::new(RefCell::new(ModeRunner::new())),
             installed_apps: Rc::new(get_installed_apps()),
         }
     }
@@ -39,7 +38,7 @@ impl SearchWindow {
     #[rustfmt::skip]
     pub fn present(&self) {
         self.container.append(&self.create_search_box_widget());
-        self.container.append(self.search_results.borrow().container());
+        self.container.append(self.mode_runner.borrow().container());
         self.window.present();
     }
 
@@ -61,7 +60,7 @@ impl SearchWindow {
 
     fn on_search_query_changed(&self, query: &str) {
         // Clear previous results
-        self.search_results.borrow_mut().clear();
+        self.mode_runner.borrow_mut().clear();
 
         if query.is_empty() {
             return;
@@ -70,10 +69,10 @@ impl SearchWindow {
 
         if AppResults::is_activated(&query) {
             let app_results = AppResults::new(&query, &self.installed_apps);
-            self.search_results.borrow_mut().show(app_results);
+            self.mode_runner.borrow_mut().show(app_results);
         } else if FileBrowser::is_activated(&query) {
             let file_browser = FileBrowser::new(&query);
-            self.search_results.borrow_mut().show(file_browser);
+            self.mode_runner.borrow_mut().show(file_browser);
         }
     }
 }
