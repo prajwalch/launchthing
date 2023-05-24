@@ -28,11 +28,10 @@ impl FileBrowser {
 }
 
 fn home_dir_path() -> String {
-    if cfg!(windows) {
-        env::var("USERPROFILE").expect("environment variable `%USERPROFILE%` should set")
-    } else {
-        env::var("HOME").expect("environment variable `$HOME` should set")
-    }
+    let env_var_name = if cfg!(windows) { "USERPROFILE" } else { "HOME" };
+    env::var(env_var_name).unwrap_or_else(|_| {
+        panic!("environment variable `{env_var_name}` should defined on your system")
+    })
 }
 
 fn get_all_child_of_given_path(path: &Path) -> Option<Vec<PathBuf>> {
