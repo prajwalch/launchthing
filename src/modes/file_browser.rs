@@ -134,7 +134,10 @@ fn create_list_item(child_path: &Path) -> ListItem {
     let container = gtk::Box::new(gtk::Orientation::Horizontal, 5);
     container.append(&create_icon_widget(child_path));
 
-    let path_name = child_path.file_name().unwrap_or_default().to_string_lossy();
+    let path_name = child_path
+        .file_name()
+        .unwrap_or(child_path.as_os_str())
+        .to_string_lossy();
     container.append(&create_label_widget(&path_name));
 
     let list_item = ListItem::new();
