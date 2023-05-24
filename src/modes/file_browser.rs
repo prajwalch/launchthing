@@ -1,4 +1,5 @@
 use std::borrow::Borrow;
+use std::env;
 use std::fs::{DirEntry, ReadDir};
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -8,25 +9,13 @@ use gtk::prelude::*;
 use super::ListItem;
 use super::Mode;
 
-#[cfg(target_os = "linux")]
-const HOME_DIR: &str = env!(
-    "HOME",
-    "environment variable `$HOME` is not defined on your system"
-);
-
-#[cfg(target_os = "windows")]
-const HOME_DIR: &str = env!(
-    "USERPROFILE",
-    "environment variable `%USERPROFILE%` is not defined on your system"
-);
-
 pub struct FileBrowser {
     child_paths: Vec<PathBuf>,
 }
 
 impl FileBrowser {
     pub fn new(search_query: &str) -> Self {
-        let search_query = search_query.replace('~', HOME_DIR);
+        let search_query = search_query.replace('~', &home_dir_path());
         let path = PathBuf::from(search_query);
         let child_paths = if path.exists() {
             get_all_child_of_given_path(&path).unwrap_or_default()
@@ -35,6 +24,14 @@ impl FileBrowser {
         };
 
         Self { child_paths }
+    }
+}
+
+fn home_dir_path() -> String {
+    if cfg!(windows) {
+        env::var("USERPROFILE").expect("environment variable `%USERPROFILE%` should set")
+    } else {
+        env::var("HOME").expect("environment variable `$HOME` should set")
     }
 }
 
