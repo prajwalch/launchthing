@@ -85,7 +85,7 @@ impl ModeRunner {
         self.scrollable_container.set_visible(true);
     }
 
-    pub fn clear(&mut self) {
+    pub fn clear_results(&mut self) {
         self.scrollable_container.set_visible(false);
 
         for item in self.list_items.iter() {

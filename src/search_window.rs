@@ -60,7 +60,7 @@ impl SearchWindow {
 
     fn on_search_query_changed(&self, query: &str) {
         // Clear previous results
-        self.mode_runner.borrow_mut().clear();
+        self.mode_runner.borrow_mut().clear_results();
 
         if query.is_empty() {
             return;
