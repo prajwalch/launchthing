@@ -3,6 +3,7 @@ name = "launchthing"
 version = "0.1.0"
 authors = ["Prajwal Chapagain <prajwal.chapagain58@gmail.com>"]
 edition = "2021"
+description = "A cross-platform application launcher"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
