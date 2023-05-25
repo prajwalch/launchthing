@@ -6,6 +6,7 @@ edition = "2021"
 description = "A cross-platform application launcher"
 homepage = "https://github.com/PrajwalCH/launchthing"
 repository = "https://github.com/PrajwalCH/launchthing"
+license = "GPL-3.0"
 
 [dependencies]
 gtk = { version = "0.6.6", package = "gtk4", features = ["v4_10"] }
