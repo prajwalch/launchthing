@@ -5,7 +5,5 @@ authors = ["Prajwal Chapagain <prajwal.chapagain58@gmail.com>"]
 edition = "2021"
 description = "A cross-platform application launcher"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 gtk = { version = "0.6.6", package = "gtk4", features = ["v4_10"] }
