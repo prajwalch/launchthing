@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Prajwal Chapagain <prajwal.chapagain58@gmail.com>"]
 edition = "2021"
 description = "A cross-platform application launcher"
+homepage = "https://github.com/PrajwalCH/launchthing"
 
 [dependencies]
 gtk = { version = "0.6.6", package = "gtk4", features = ["v4_10"] }
