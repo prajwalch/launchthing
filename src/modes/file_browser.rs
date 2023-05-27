@@ -9,13 +9,18 @@ use gtk::prelude::*;
 use super::ListItem;
 use super::Mode;
 
+const HOME_DIR: &str = env!(
+    "HOME",
+    "environment variable `$HOME` is not defined on your system"
+);
+
 pub struct FileBrowser {
     child_paths: Vec<PathBuf>,
 }
 
 impl FileBrowser {
     pub fn new(search_query: &str) -> Self {
-        let search_query = search_query.replace('~', &home_dir_path());
+        let search_query = search_query.replace('~', HOME_DIR);
         let path = PathBuf::from(search_query);
         let child_paths = if path.exists() {
             get_all_child_of_given_path(&path).unwrap_or_default()
@@ -25,13 +30,6 @@ impl FileBrowser {
 
         Self { child_paths }
     }
-}
-
-fn home_dir_path() -> String {
-    let env_var_name = if cfg!(windows) { "USERPROFILE" } else { "HOME" };
-    env::var(env_var_name).unwrap_or_else(|_| {
-        panic!("environment variable `{env_var_name}` should defined on your system")
-    })
 }
 
 fn get_all_child_of_given_path(path: &Path) -> Option<Vec<PathBuf>> {
@@ -87,12 +85,7 @@ where
 
 impl Mode for FileBrowser {
     fn is_activated(query: &str) -> bool {
-        #[cfg(target_os = "linux")]
-        let slash = '/';
-        #[cfg(target_os = "windows")]
-        let slash = '\\';
-
-        query.starts_with(['~', slash])
+        query.starts_with(['~', '/'])
     }
 
     fn contains_data(&self) -> bool {
