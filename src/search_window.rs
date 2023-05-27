@@ -59,8 +59,9 @@ impl SearchWindow {
     }
 
     fn on_search_query_changed(&self, query: &str) {
+        let mut mode_runner = self.mode_runner.borrow_mut();
         // Clear previous results
-        self.mode_runner.borrow_mut().clear_results();
+        mode_runner.clear_results();
 
         if query.is_empty() {
             return;
@@ -68,11 +69,9 @@ impl SearchWindow {
         let query = query.to_lowercase();
 
         if AppResults::is_activated(&query) {
-            let app_results = AppResults::new(&query, &self.installed_apps);
-            self.mode_runner.borrow_mut().run(app_results);
+            mode_runner.run(AppResults::new(&query, &self.installed_apps));
         } else if FileBrowser::is_activated(&query) {
-            let file_browser = FileBrowser::new(&query);
-            self.mode_runner.borrow_mut().run(file_browser);
+            mode_runner.run(FileBrowser::new(&query));
         }
     }
 }
