@@ -37,8 +37,18 @@ impl SearchWindow {
 
     #[rustfmt::skip]
     pub fn present(&self) {
+        let mode_runner = Rc::clone(&self.mode_runner);
         self.container.append(&self.create_search_box_widget());
-        self.container.append(self.mode_runner.borrow().container());
+        self.container.append(mode_runner.borrow().container());
+
+        let key_event_controller = gtk::EventControllerKey::new();
+        key_event_controller.connect_key_pressed(move |_, key, _, _| {
+            mode_runner.borrow().on_key_pressed(key);
+            // Don't propagate the signal to the default handler/s because it removes the focus
+            // from the search box which we don't want.
+            gtk::Inhibit(true)
+        });
+        self.window.add_controller(key_event_controller);
         self.window.present();
     }
 

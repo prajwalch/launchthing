@@ -3,6 +3,7 @@ mod file_browser;
 
 use std::cell::RefCell;
 
+use gtk::gdk;
 use gtk::glib;
 use gtk::glib::PropertySet;
 use gtk::prelude::*;
@@ -62,6 +63,37 @@ impl ModeRunner {
         &self.scrollable_container
     }
 
+    pub fn on_key_pressed(&self, key: gdk::Key) {
+        let Some(selected_item_index) = self.result_list.selected_row().map(|item| item.index() as usize) else {
+            return;
+        };
+
+        match key {
+            gdk::Key::Tab | gdk::Key::Down => {
+                let last_item_index = self.list_items.len() - 1;
+                // If the last item is currently selected, select the first item otherwise select
+                // the next item as normal.
+                let next_item = if selected_item_index == last_item_index {
+                    self.list_items.first()
+                } else {
+                    self.list_items.get(selected_item_index + 1)
+                };
+                self.result_list.select_row(next_item);
+            }
+            gdk::Key::Up => {
+                // If the first item is currently selected, select the last item otherwise select
+                // the upper item as normal.
+                let next_item = if selected_item_index == 0 {
+                    self.list_items.last()
+                } else {
+                    self.list_items.get(selected_item_index - 1)
+                };
+                self.result_list.select_row(next_item);
+            }
+            _ => {}
+        }
+    }
+
     pub fn run<M: Mode + 'static>(&mut self, mode: M) {
         if !mode.contains_data() {
             return;
@@ -71,6 +103,8 @@ impl ModeRunner {
         for item in &self.list_items {
             self.result_list.append(item);
         }
+        self.result_list.select_row(self.list_items.first());
+
         // TODO: Currently pressing enter key doesn't emits the `row-activated` signal.
         //       Which means items can be selected only by using the touchpad or mouse.
         //

@@ -31,6 +31,6 @@ list {
     background-color: @main_bg;
 }
 
-list > row:hover {
+list > row:hover, row:selected {
     background-color: @list_item_hover_bg;
 }
