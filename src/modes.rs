@@ -71,16 +71,14 @@ impl ModeRunner {
         for item in &self.list_items {
             self.result_list.append(item);
         }
+        // TODO: Currently pressing enter key doesn't emits the `row-activated` signal.
+        //       Which means items can be selected only by using the touchpad or mouse.
+        //
         // Add an item selected signal handler and store its id so that we can remove it when
-        // clearing results later
-        let handler_id = self
-            .result_list
-            .connect_row_selected(move |result_list, item| {
-                if let Some(item) = item {
-                    result_list.unselect_row(item);
-                    mode.on_item_selected(item);
-                };
-            });
+        // clearing results later.
+        let handler_id = self.result_list.connect_row_activated(move |_, item| {
+            mode.on_item_selected(item);
+        });
         self.select_handler_id.set(Some(handler_id));
         self.scrollable_container.set_visible(true);
     }
