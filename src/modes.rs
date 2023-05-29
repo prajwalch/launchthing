@@ -43,7 +43,7 @@ pub struct ModeRunner {
 impl ModeRunner {
     pub fn new() -> Self {
         let scrollable_container = gtk::ScrolledWindow::new();
-        scrollable_container.set_min_content_height(200);
+        scrollable_container.set_min_content_height(500);
         // Only show it when we get the results later
         scrollable_container.set_visible(false);
 
