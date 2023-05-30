@@ -53,12 +53,12 @@ impl SearchWindow {
     }
 
     fn create_search_box_widget(&self) -> gtk::SearchEntry {
-        let search_window = self.clone();
         let search_box = gtk::SearchEntry::new();
         search_box.set_search_delay(0);
         search_box.set_height_request(50);
         search_box.set_placeholder_text(Some("Search"));
 
+        let search_window = self.clone();
         search_box.connect_search_changed(move |search_box| {
             search_window.on_search_query_changed(search_box.text().as_str());
         });
