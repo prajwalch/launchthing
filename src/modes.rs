@@ -68,6 +68,7 @@ impl ModeRunner {
             return;
         };
 
+        // TODO: Reduce duplication
         match key {
             gdk::Key::Tab | gdk::Key::Down => {
                 let last_item_index = self.list_items.len() - 1;
@@ -78,6 +79,9 @@ impl ModeRunner {
                 } else {
                     self.list_items.get(selected_item_index + 1)
                 };
+                if let Some(item) = next_item {
+                    item.grab_focus();
+                }
                 self.result_list.select_row(next_item);
             }
             gdk::Key::Up => {
@@ -88,6 +92,9 @@ impl ModeRunner {
                 } else {
                     self.list_items.get(selected_item_index - 1)
                 };
+                if let Some(item) = next_item {
+                    item.grab_focus();
+                }
                 self.result_list.select_row(next_item);
             }
             _ => {}
