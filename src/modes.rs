@@ -68,37 +68,33 @@ impl ModeRunner {
             return;
         };
 
-        // TODO: Reduce duplication
-        match key {
+        let next_item = match key {
             gdk::Key::Tab | gdk::Key::Down => {
                 let last_item_index = self.list_items.len() - 1;
                 // If the last item is currently selected, select the first item otherwise select
                 // the next item as normal.
-                let next_item = if selected_item_index == last_item_index {
+                if selected_item_index == last_item_index {
                     self.list_items.first()
                 } else {
                     self.list_items.get(selected_item_index + 1)
-                };
-                if let Some(item) = next_item {
-                    item.grab_focus();
                 }
-                self.result_list.select_row(next_item);
             }
             gdk::Key::Up => {
                 // If the first item is currently selected, select the last item otherwise select
                 // the upper item as normal.
-                let next_item = if selected_item_index == 0 {
+                if selected_item_index == 0 {
                     self.list_items.last()
                 } else {
                     self.list_items.get(selected_item_index - 1)
-                };
-                if let Some(item) = next_item {
-                    item.grab_focus();
                 }
-                self.result_list.select_row(next_item);
             }
-            _ => {}
+            _ => None,
+        };
+
+        if let Some(item) = next_item {
+            item.grab_focus();
         }
+        self.result_list.select_row(next_item);
     }
 
     pub fn run<M: Mode + 'static>(&mut self, mode: M) {
