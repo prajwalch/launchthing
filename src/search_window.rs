@@ -1,9 +1,7 @@
-use std::cell::RefCell;
 use std::rc::Rc;
 
+use gtk::gdk;
 use gtk::gio;
-use gtk::glib;
-use gtk::glib::clone;
 use gtk::prelude::*;
 
 /// The `ListItem` is a displayable widget used to represent an item in a result list.
@@ -16,7 +14,8 @@ type ListItem = gtk::ListBoxRow;
 pub struct SearchWindow {
     window: gtk::ApplicationWindow,
     container: gtk::Box,
-    mode_runner: Rc<RefCell<ModeRunner>>,
+    result_list: gtk::ListBox,
+    list_items: Vec<ListItem>,
     installed_apps: Rc<Vec<gio::AppInfo>>,
 }
 
@@ -31,30 +30,38 @@ impl SearchWindow {
         let container = gtk::Box::new(gtk::Orientation::Vertical, 0);
         window.set_child(Some(&container));
 
+        let scroll_window = gtk::ScrolledWindow::new();
+        scroll_window.set_min_content_height(500);
+        container.append(&scroll_window);
+
+        let result_list = gtk::ListBox::new();
+        scroll_window.set_child(Some(&result_list));
+
+        let installed_apps = get_installed_apps();
+        let list_items = installed_apps
+            .iter()
+            .map(create_list_item)
+            .collect::<Vec<ListItem>>();
+
+        for item in &list_items {
+            result_list.append(item);
+        }
+        result_list.select_row(list_items.first());
+
         Self {
             window,
             container,
-            mode_runner: Rc::new(RefCell::new(ModeRunner::new())),
-            installed_apps: Rc::new(get_installed_apps()),
+            result_list,
+            list_items,
+            installed_apps: Rc::new(installed_apps),
         }
     }
 
     #[rustfmt::skip]
     pub fn present(&self) {
-        let mode_runner = Rc::clone(&self.mode_runner);
-        let search_box = self.create_search_box_widget();
-        self.container.append(&search_box);
-        self.container.append(mode_runner.borrow().container());
-
-        let key_event_controller = gtk::EventControllerKey::new();
-        key_event_controller.connect_key_pressed(move |_, key, _, _| {
-            mode_runner.borrow().on_key_pressed(key);
-            search_box.grab_focus();
-            // Don't propagate the signal to the default handler/s because it removes the focus
-            // from the search box which we don't want.
-            gtk::Inhibit(true)
-        });
-        self.window.add_controller(key_event_controller);
+        self.container.prepend(&self.create_search_box_widget());
+        self.add_selected_item_handler();
+        self.add_key_event_handler();
         self.window.present();
     }
 
@@ -68,27 +75,71 @@ impl SearchWindow {
         search_box.connect_search_changed(move |search_box| {
             search_window.on_search_query_changed(search_box.text().as_str());
         });
-
-        #[rustfmt::skip]
-        self.window.add_action(&create_change_query_action(&search_box));
         search_box
     }
 
     fn on_search_query_changed(&self, query: &str) {
-        let mut mode_runner = self.mode_runner.borrow_mut();
         // Clear previous results
-        mode_runner.clear_results();
+        self.clear_results();
 
         if query.is_empty() {
             return;
         }
         let query = query.to_lowercase();
 
-        if AppResults::is_activated(&query) {
-            mode_runner.run(AppResults::new(&query, &self.installed_apps));
-        } else if FileBrowser::is_activated(&query) {
-            mode_runner.run(FileBrowser::new(&query));
+        // Hide all unmatched apps
+        for (index, app) in self.installed_apps.iter().enumerate() {
+            if app.name().to_lowercase().contains(&query) {
+                continue;
+            }
+
+            if let Some(item) = self.list_items.get(index) {
+                item.set_visible(false);
+            }
         }
+    }
+
+    fn clear_results(&self) {
+        let hidden_items = self.list_items.iter().filter(|item| !item.is_visible());
+        for hidden_item in hidden_items {
+            hidden_item.set_visible(true);
+        }
+    }
+
+    fn add_selected_item_handler(&self) {
+        let search_window = self.clone();
+        self.result_list.connect_row_activated(move |_, item| {
+            search_window.on_item_selected(item);
+        });
+    }
+
+    fn on_item_selected(&self, item: &ListItem) {
+        let Some(selected_app) = self.installed_apps.get(item.index() as usize) else {
+            return;
+        };
+
+        let app_launch_context = self.result_list.display().app_launch_context();
+        if let Err(e) = selected_app.launch(&[], Some(&app_launch_context)) {
+            eprintln!("error: Failed to launch {}: {e}", selected_app.name());
+        }
+        self.window.close();
+    }
+
+    fn add_key_event_handler(&self) {
+        let search_window = self.clone();
+        let key_event_controller = gtk::EventControllerKey::new();
+
+        key_event_controller.connect_key_pressed(move |_, key, _, _| {
+            search_window.on_key_pressed(key);
+            // Don't propagate the signal to the default handler/s because it removes the focus
+            // from the search box which we don't want.
+            gtk::Inhibit(true)
+        });
+        self.window.add_controller(key_event_controller);
+    }
+
+    fn on_key_pressed(&self, key: gdk::Key) {
+        todo!()
     }
 }
 
@@ -100,23 +151,52 @@ fn get_installed_apps() -> Vec<gio::AppInfo> {
         .collect::<Vec<gio::AppInfo>>()
 }
 
-/// NOTE: For now this action is being only used by [FileBrowser] item
-///       not sure whether it will be useful for others in future.
-fn create_change_query_action(search_box: &gtk::SearchEntry) -> gio::SimpleAction {
-    let change_query_action =
-        gio::SimpleAction::new("change-query", Some(&String::static_variant_type()));
+fn create_list_item(app: &gio::AppInfo) -> ListItem {
+    let container = gtk::Box::new(gtk::Orientation::Horizontal, 5);
+    container.set_margin_top(3);
+    container.set_margin_start(10);
+    container.set_margin_end(3);
 
-    change_query_action.connect_activate(clone!(@weak search_box => move |_, variant| {
-        let Some(variant) = variant else {
-            return;
-        };
-        let Some(new_query) = variant.get::<String>() else {
-            return;
-        };
-        // Replace currently showed query with newly created query
-        search_box.set_text(&new_query);
-        // Move cursor to end
-        search_box.set_position(-1);
-    }));
-    change_query_action
+    if let Some(icon) = app.icon() {
+        container.append(&create_icon_widget(&icon));
+    }
+    container.append(&create_name_and_description_widget(app));
+
+    let list_item = ListItem::new();
+    list_item.set_child(Some(&container));
+    list_item
+}
+
+fn create_icon_widget(icon: &gio::Icon) -> gtk::Image {
+    let icon = gtk::Image::from_gicon(icon);
+    icon.set_margin_top(6);
+    icon.set_margin_bottom(6);
+    icon.set_margin_start(6);
+    icon.set_margin_end(6);
+    icon.set_pixel_size(40);
+
+    icon
+}
+
+fn create_name_and_description_widget(app: &gio::AppInfo) -> gtk::Box {
+    let container = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    container.set_margin_top(6);
+    container.set_margin_bottom(6);
+
+    let name = gtk::Label::new(Some(&app.name()));
+    name.set_halign(gtk::Align::Start);
+    container.append(&name);
+
+    if let Some(app_des) = app.description() {
+        let description = gtk::Label::new(None);
+        description.set_halign(gtk::Align::Start);
+        description.set_margin_top(2);
+        description.set_opacity(0.5);
+        description.set_wrap(true);
+        description.set_css_classes(&["body"]);
+        description.set_text(&app_des);
+
+        container.append(&description);
+    }
+    container
 }
