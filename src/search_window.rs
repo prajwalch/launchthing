@@ -6,7 +6,11 @@ use gtk::glib;
 use gtk::glib::clone;
 use gtk::prelude::*;
 
-use crate::modes::{AppResults, FileBrowser, Mode, ModeRunner};
+/// The `ListItem` is a displayable widget used to represent an item in a result list.
+///
+/// It can contain only one child widget so when multiple widgets need to be displayed on a single
+/// item the [gtk::Box] container can be used as a child.
+type ListItem = gtk::ListBoxRow;
 
 #[derive(Clone)]
 pub struct SearchWindow {
