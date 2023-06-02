@@ -81,10 +81,10 @@ impl SearchWindow {
         // NOTE: We can directly unwrap this since we already know that search box is the first
         //       child of container but it is always good to perform action safely.
         let search_box = self.container.first_child();
-        let app_mode = Rc::clone(&self.app_mode);
+        let app_mode = &self.app_mode;
         let key_event_controller = gtk::EventControllerKey::new();
 
-        key_event_controller.connect_key_pressed(move |_, key, _, _| {
+        key_event_controller.connect_key_pressed(clone!(@strong app_mode => move |_, key, _, _| {
             app_mode.on_key_pressed(key);
 
             if let Some(search_box) = &search_box {
@@ -93,7 +93,7 @@ impl SearchWindow {
             // Don't propagate the signal to the default handler/s because it removes the focus
             // from the search box which we don't want.
             gtk::Inhibit(true)
-        });
+        }));
         key_event_controller
     }
 }
