@@ -63,7 +63,43 @@ impl AppMode {
     }
 
     pub fn on_key_pressed(&self, key: gdk::Key) {
-        todo!()
+        let visible_items = self
+            .list_items
+            .iter()
+            .filter(|item| item.is_visible())
+            .collect::<Vec<&ListItem>>();
+
+        let Some(selected_item_index) = visible_items.iter().position(|item| item.is_selected()) else {
+            return;
+        };
+
+        let next_item = match key {
+            gdk::Key::Tab | gdk::Key::Down => {
+                let last_item_index = visible_items.len() - 1;
+                // If the last item is currently selected, select the first item otherwise select
+                // the next item as normal.
+                if selected_item_index == last_item_index {
+                    visible_items.first()
+                } else {
+                    visible_items.get(selected_item_index + 1)
+                }
+            }
+            gdk::Key::Up => {
+                // If the first item is currently selected, select the last item otherwise select
+                // the upper item as normal.
+                if selected_item_index == 0 {
+                    visible_items.last()
+                } else {
+                    visible_items.get(selected_item_index - 1)
+                }
+            }
+            _ => None,
+        };
+
+        if let Some(item) = next_item {
+            self.list.select_row(Some(*item));
+            item.grab_focus();
+        }
     }
 
     fn on_item_selected(apps: &[gio::AppInfo], list: &gtk::ListBox, item: &ListItem) {
