@@ -34,11 +34,9 @@ impl SearchWindow {
         scroll_window.set_min_content_height(500);
         container.append(&scroll_window);
 
-        let result_list = gtk::ListBox::new();
-        scroll_window.set_child(Some(&result_list));
-
         let installed_apps = Rc::new(get_installed_apps());
-        let list_items = create_and_append_list_items(&installed_apps, &result_list);
+        let (result_list, list_items) = create_result_list_with_items(&installed_apps);
+        scroll_window.set_child(Some(&result_list));
 
         Self {
             window,
@@ -141,6 +139,12 @@ fn get_installed_apps() -> Vec<gio::AppInfo> {
         .filter(|app| app.icon().is_some() && app.should_show())
         .cloned()
         .collect::<Vec<gio::AppInfo>>()
+}
+
+fn create_result_list_with_items(installed_apps: &[gio::AppInfo]) -> (gtk::ListBox, Vec<ListItem>) {
+    let result_list = gtk::ListBox::new();
+    let list_items = create_and_append_list_items(installed_apps, &result_list);
+    (result_list, list_items)
 }
 
 fn create_and_append_list_items(
