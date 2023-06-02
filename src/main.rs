@@ -1,3 +1,4 @@
+mod app_mode;
 mod search_window;
 
 use gtk::gdk;
