@@ -45,14 +45,20 @@ impl AppMode {
     }
 
     pub fn on_search_query_changed(&self, query: &str) {
+        self.list.unselect_all();
+
         for (index, app) in self.apps.iter().enumerate() {
+            let Some(item) = self.list_items.get(index)  else {
+                continue;
+            };
+
             if app.name().to_lowercase().contains(query) {
+                if self.list.selected_row().is_none() {
+                    self.list.select_row(Some(item));
+                }
                 continue;
             }
-
-            if let Some(item) = self.list_items.get(index) {
-                item.set_visible(false);
-            }
+            item.set_visible(false);
         }
     }
 
