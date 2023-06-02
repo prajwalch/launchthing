@@ -37,7 +37,7 @@ impl SearchWindow {
         let result_list = gtk::ListBox::new();
         scroll_window.set_child(Some(&result_list));
 
-        let installed_apps = get_installed_apps();
+        let installed_apps = Rc::new(get_installed_apps());
         let list_items = create_and_append_list_items(&installed_apps, &result_list);
 
         Self {
@@ -45,7 +45,7 @@ impl SearchWindow {
             container,
             result_list,
             list_items,
-            installed_apps: Rc::new(installed_apps),
+            installed_apps,
         }
     }
 
