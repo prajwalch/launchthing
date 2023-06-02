@@ -2,7 +2,7 @@
 
 launchthing is a linux application launcher written in Rust using GTK4.
 
-https://github.com/PrajwalCH/launchthing/assets/42384293/1322b64d-6420-4e8e-9ba4-2f33a261cdf6
+https://github.com/PrajwalCH/launchthing/assets/42384293/3617055e-48a9-4d8a-b50f-0bf3cb9162ee
 
 ## Install
 
