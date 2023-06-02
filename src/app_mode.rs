@@ -75,38 +75,32 @@ impl AppMode {
             return;
         };
 
-        if key == gdk::Key::Return {
-            selected_item.activate();
-            return;
-        }
-
-        let next_item = match key {
-            gdk::Key::Tab | gdk::Key::Down => {
-                let last_item_index = visible_items.len() - 1;
-                // If the last item is currently selected, select the first item otherwise select
-                // the next item as normal.
-                if selected_item_index == last_item_index {
-                    visible_items.first()
-                } else {
-                    visible_items.get(selected_item_index + 1)
-                }
+        let select_item = |next_item: Option<&&ListItem>| {
+            if let Some(item) = next_item {
+                self.list.select_row(Some(*item));
+                item.grab_focus();
             }
-            gdk::Key::Up => {
-                // If the first item is currently selected, select the last item otherwise select
-                // the upper item as normal.
-                if selected_item_index == 0 {
-                    visible_items.last()
-                } else {
-                    visible_items.get(selected_item_index - 1)
-                }
-            }
-            _ => None,
         };
 
-        if let Some(item) = next_item {
-            self.list.select_row(Some(*item));
-            item.grab_focus();
-        }
+        match key {
+            gdk::Key::Return => {
+                selected_item.activate();
+            }
+            gdk::Key::Tab | gdk::Key::Down => {
+                // Round new index to 0 if it's become greater than items length
+                let next_item_index = (selected_item_index + 1) % visible_items.len();
+                select_item(visible_items.get(next_item_index));
+            }
+            gdk::Key::Up => {
+                // NOTE: Figure out how to use modulo operator when subtracting
+                if selected_item_index == 0 {
+                    select_item(visible_items.last())
+                } else {
+                    select_item(visible_items.get(selected_item_index - 1));
+                }
+            }
+            _ => (),
+        };
     }
 
     fn on_item_selected(apps: &[gio::AppInfo], list: &gtk::ListBox, item: &ListItem) {
