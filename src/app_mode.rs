@@ -52,13 +52,15 @@ impl AppMode {
                 continue;
             };
 
-            if app.name().to_lowercase().contains(query) {
-                if self.list.selected_row().is_none() {
-                    self.list.select_row(Some(item));
-                }
+            if !app.name().to_lowercase().contains(query) {
+                item.set_visible(false);
                 continue;
             }
-            item.set_visible(false);
+
+            // Select the first visible item only
+            if self.list.selected_row().is_none() {
+                self.list.select_row(Some(item));
+            }
         }
     }
 
