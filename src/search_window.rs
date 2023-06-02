@@ -39,7 +39,7 @@ impl SearchWindow {
     #[rustfmt::skip]
     pub fn present(&self) {
         self.container.prepend(&self.create_search_box_widget());
-        self.add_key_event_handler();
+        self.window.add_controller(self.create_key_event_handler());
         self.window.present();
     }
 
@@ -67,7 +67,7 @@ impl SearchWindow {
         self.app_mode.on_search_query_changed(&query);
     }
 
-    fn add_key_event_handler(&self) {
+    fn create_key_event_handler(&self) -> gtk::EventControllerKey {
         let app_mode = Rc::clone(&self.app_mode);
         let key_event_controller = gtk::EventControllerKey::new();
 
@@ -77,6 +77,6 @@ impl SearchWindow {
             // from the search box which we don't want.
             gtk::Inhibit(true)
         });
-        self.window.add_controller(key_event_controller);
+        key_event_controller
     }
 }
