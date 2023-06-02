@@ -41,6 +41,7 @@ impl AppMode {
         for hidden_item in hidden_items {
             hidden_item.set_visible(true);
         }
+        self.list.select_row(self.list_items.first());
     }
 
     pub fn on_search_query_changed(&self, query: &str) {
