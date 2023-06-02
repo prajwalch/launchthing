@@ -133,7 +133,6 @@ fn create_and_append_list_items(apps: &[gio::AppInfo], list: &gtk::ListBox) -> V
         list.append(item);
     }
     list.select_row(list_items.first());
-
     list_items
 }
 
