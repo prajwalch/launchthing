@@ -71,7 +71,9 @@ impl AppMode {
             .filter(|item| item.is_visible())
             .collect::<Vec<&ListItem>>();
 
-        let Some((selected_item_index, selected_item)) = visible_items.iter().enumerate().find(|(_, item)| item.is_selected()) else {
+        let Some((selected_item_index, selected_item)) =
+            visible_items.iter().enumerate().find(|(_, item)| item.is_selected()) else
+        {
             return;
         };
 
