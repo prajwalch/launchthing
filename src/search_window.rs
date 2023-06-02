@@ -38,15 +38,7 @@ impl SearchWindow {
         scroll_window.set_child(Some(&result_list));
 
         let installed_apps = get_installed_apps();
-        let list_items = installed_apps
-            .iter()
-            .map(create_list_item)
-            .collect::<Vec<ListItem>>();
-
-        for item in &list_items {
-            result_list.append(item);
-        }
-        result_list.select_row(list_items.first());
+        let list_items = create_and_append_list_items(&installed_apps, &result_list);
 
         Self {
             window,
@@ -149,6 +141,23 @@ fn get_installed_apps() -> Vec<gio::AppInfo> {
         .filter(|app| app.icon().is_some() && app.should_show())
         .cloned()
         .collect::<Vec<gio::AppInfo>>()
+}
+
+fn create_and_append_list_items(
+    installed_apps: &[gio::AppInfo],
+    result_list: &gtk::ListBox,
+) -> Vec<ListItem> {
+    let list_items = installed_apps
+        .iter()
+        .map(create_list_item)
+        .collect::<Vec<ListItem>>();
+
+    for item in &list_items {
+        result_list.append(item);
+    }
+    result_list.select_row(list_items.first());
+
+    list_items
 }
 
 fn create_list_item(app: &gio::AppInfo) -> ListItem {
