@@ -57,14 +57,13 @@ impl SearchWindow {
         );
 
         search_box.connect_search_changed(clone!(@strong app_mode => move |search_box| {
-            let query = search_box.text().to_string();
+            let query = search_box.text().to_lowercase();
             // Clear previous results
             app_mode.show_hidden_apps();
 
             if query.is_empty() {
                 return;
             }
-            let query = query.to_lowercase();
             app_mode.on_search_query_changed(&query);
         }));
         search_box
