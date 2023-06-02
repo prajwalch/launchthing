@@ -46,7 +46,7 @@ impl SearchWindow {
     }
 
     fn create_search_box_widget(&self) -> gtk::SearchEntry {
-        let app_mode = Rc::clone(&self.app_mode);
+        let app_mode = &self.app_mode;
         let search_box = gtk::SearchEntry::new();
         search_box.set_search_delay(0);
         search_box.set_height_request(50);
