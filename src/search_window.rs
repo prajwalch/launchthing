@@ -28,7 +28,7 @@ impl SearchWindow {
         container.append(&scroll_window);
 
         let app_mode = Rc::new(AppMode::new());
-        scroll_window.set_child(Some(app_mode.result_list()));
+        scroll_window.set_child(Some(app_mode.list()));
 
         Self {
             window,

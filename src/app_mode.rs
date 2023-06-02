@@ -32,7 +32,7 @@ impl AppMode {
         }
     }
 
-    pub fn result_list(&self) -> &gtk::ListBox {
+    pub fn list(&self) -> &gtk::ListBox {
         &self.list
     }
 
