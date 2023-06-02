@@ -1,6 +1,7 @@
-use gtk::gdk;
 use std::rc::Rc;
 
+use gtk::gdk;
+use gtk::glib::clone;
 use gtk::prelude::*;
 
 use crate::app_mode::AppMode;
@@ -45,30 +46,28 @@ impl SearchWindow {
     }
 
     fn create_search_box_widget(&self) -> gtk::SearchEntry {
+        let app_mode = Rc::clone(&self.app_mode);
         let search_box = gtk::SearchEntry::new();
         search_box.set_search_delay(0);
         search_box.set_height_request(50);
         search_box.set_placeholder_text(Some("Search"));
 
-        let app_mode = Rc::clone(&self.app_mode);
-        search_box.connect_activate(move |_| app_mode.on_key_pressed(gdk::Key::Return));
+        search_box.connect_activate(
+            clone!(@strong app_mode => move |_| app_mode.on_key_pressed(gdk::Key::Return)),
+        );
 
-        let search_window = self.clone();
-        search_box.connect_search_changed(move |search_box| {
-            search_window.on_search_query_changed(search_box.text().as_str());
-        });
+        search_box.connect_search_changed(clone!(@strong app_mode => move |search_box| {
+            let query = search_box.text().to_string();
+            // Clear previous results
+            app_mode.show_hidden_apps();
+
+            if query.is_empty() {
+                return;
+            }
+            let query = query.to_lowercase();
+            app_mode.on_search_query_changed(&query);
+        }));
         search_box
-    }
-
-    fn on_search_query_changed(&self, query: &str) {
-        // Clear previous results
-        self.app_mode.show_hidden_apps();
-
-        if query.is_empty() {
-            return;
-        }
-        let query = query.to_lowercase();
-        self.app_mode.on_search_query_changed(&query);
     }
 
     fn create_key_event_handler(&self) -> gtk::EventControllerKey {
