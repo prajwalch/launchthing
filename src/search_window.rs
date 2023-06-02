@@ -34,8 +34,13 @@ impl SearchWindow {
 
     #[rustfmt::skip]
     pub fn present(&self) {
-        self.container.append(&self.create_search_box_widget());
+        let search_box = self.create_search_box_widget();
+        self.container.append(&search_box);
         self.container.append(&self.create_scroll_window());
+
+        // FIXME: Currently search box doesn't gets auto focus when app loads therefore we are
+        //        required to manually focus it.
+        search_box.grab_focus();
         self.window.add_controller(self.create_key_event_handler());
         self.window.present();
     }
