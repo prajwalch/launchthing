@@ -127,13 +127,10 @@ fn get_installed_apps() -> Vec<gio::AppInfo> {
 }
 
 fn create_and_append_list_items(
-    installed_apps: &[gio::AppInfo],
+    apps: &[gio::AppInfo],
     result_list: &gtk::ListBox,
 ) -> Vec<ListItem> {
-    let list_items = installed_apps
-        .iter()
-        .map(create_list_item)
-        .collect::<Vec<ListItem>>();
+    let list_items = apps.iter().map(create_list_item).collect::<Vec<ListItem>>();
 
     for item in &list_items {
         result_list.append(item);
