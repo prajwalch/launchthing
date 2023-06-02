@@ -173,13 +173,12 @@ fn create_name_and_description_widget(app: &gio::AppInfo) -> gtk::Box {
     container.append(&name);
 
     if let Some(app_des) = app.description() {
-        let description = gtk::Label::new(None);
+        let description = gtk::Label::new(Some(&app_des));
         description.set_halign(gtk::Align::Start);
         description.set_margin_top(2);
         description.set_opacity(0.5);
         description.set_wrap(true);
         description.set_css_classes(&["body"]);
-        description.set_text(&app_des);
 
         container.append(&description);
     }
