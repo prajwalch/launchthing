@@ -48,7 +48,7 @@ impl AppMode {
         self.list.unselect_all();
 
         for (index, app) in self.apps.iter().enumerate() {
-            let Some(item) = self.list_items.get(index)  else {
+            let Some(item) = self.list_items.get(index) else {
                 continue;
             };
 
