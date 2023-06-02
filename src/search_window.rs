@@ -22,14 +22,8 @@ impl SearchWindow {
         window.set_overflow(gtk::Overflow::Hidden);
 
         let container = gtk::Box::new(gtk::Orientation::Vertical, 0);
-        window.set_child(Some(&container));
-
-        let scroll_window = gtk::ScrolledWindow::new();
-        scroll_window.set_min_content_height(500);
-        container.append(&scroll_window);
-
         let app_mode = Rc::new(AppMode::new());
-        scroll_window.set_child(Some(app_mode.list()));
+        window.set_child(Some(&container));
 
         Self {
             window,
@@ -40,7 +34,8 @@ impl SearchWindow {
 
     #[rustfmt::skip]
     pub fn present(&self) {
-        self.container.prepend(&self.create_search_box_widget());
+        self.container.append(&self.create_search_box_widget());
+        self.container.append(&self.create_scroll_window());
         self.window.add_controller(self.create_key_event_handler());
         self.window.present();
     }
@@ -67,6 +62,14 @@ impl SearchWindow {
             app_mode.on_search_query_changed(&query);
         }));
         search_box
+    }
+
+    fn create_scroll_window(&self) -> gtk::ScrolledWindow {
+        let scroll_window = gtk::ScrolledWindow::new();
+        scroll_window.set_min_content_height(500);
+        scroll_window.set_child(Some(self.app_mode.list()));
+
+        scroll_window
     }
 
     fn create_key_event_handler(&self) -> gtk::EventControllerKey {
