@@ -1,3 +1,4 @@
+use gtk::gdk;
 use std::rc::Rc;
 
 use gtk::prelude::*;
@@ -48,6 +49,9 @@ impl SearchWindow {
         search_box.set_search_delay(0);
         search_box.set_height_request(50);
         search_box.set_placeholder_text(Some("Search"));
+
+        let app_mode = Rc::clone(&self.app_mode);
+        search_box.connect_activate(move |_| app_mode.on_key_pressed(gdk::Key::Return));
 
         let search_window = self.clone();
         search_box.connect_search_changed(move |search_box| {
