@@ -24,7 +24,12 @@ impl AppMode {
             .collect::<Vec<gio::AppInfo>>();
 
         let list = gtk::ListBox::new();
-        let list_items = create_and_append_list_items(&apps, &list);
+        let list_items = apps.iter().map(create_list_item).collect::<Vec<ListItem>>();
+
+        for item in &list_items {
+            list.append(item);
+        }
+        list.select_row(list_items.first());
 
         list.connect_row_activated(clone!(@strong apps => move |list, item| {
             Self::on_item_selected(&apps, list, item);
@@ -121,16 +126,6 @@ impl AppMode {
         }
         list.activate_action("window.close", None).unwrap();
     }
-}
-
-fn create_and_append_list_items(apps: &[gio::AppInfo], list: &gtk::ListBox) -> Vec<ListItem> {
-    let list_items = apps.iter().map(create_list_item).collect::<Vec<ListItem>>();
-
-    for item in &list_items {
-        list.append(item);
-    }
-    list.select_row(list_items.first());
-    list_items
 }
 
 fn create_list_item(app: &gio::AppInfo) -> ListItem {
