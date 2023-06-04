@@ -30,7 +30,7 @@ impl AppMode {
         }
         list.select_row(list_items.first());
         list.connect_row_activated(clone!(@strong apps => move |list, item| {
-            Self::on_item_selected(&apps, list, item);
+            on_item_selected(&apps, list, item);
         }));
 
         Self {
@@ -112,18 +112,18 @@ impl AppMode {
             _ => (),
         };
     }
+}
 
-    fn on_item_selected(apps: &[gio::AppInfo], list: &gtk::ListBox, item: &ListItem) {
-        let Some(selected_app) = apps.get(item.index() as usize) else {
-            return;
-        };
+fn on_item_selected(apps: &[gio::AppInfo], list: &gtk::ListBox, item: &ListItem) {
+    let Some(selected_app) = apps.get(item.index() as usize) else {
+        return;
+    };
 
-        let app_launch_context = list.display().app_launch_context();
-        if let Err(e) = selected_app.launch(&[], Some(&app_launch_context)) {
-            eprintln!("error: Failed to launch {}: {e}", selected_app.name());
-        }
-        list.activate_action("window.close", None).unwrap();
+    let app_launch_context = list.display().app_launch_context();
+    if let Err(e) = selected_app.launch(&[], Some(&app_launch_context)) {
+        eprintln!("error: Failed to launch {}: {e}", selected_app.name());
     }
+    list.activate_action("window.close", None).unwrap();
 }
 
 fn create_list_item(app: &gio::AppInfo) -> ListItem {
