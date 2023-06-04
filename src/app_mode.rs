@@ -22,7 +22,6 @@ impl AppMode {
             .filter(|app| app.icon().is_some() && app.should_show())
             .cloned()
             .collect::<Vec<gio::AppInfo>>();
-
         let list = gtk::ListBox::new();
         let list_items = apps.iter().map(create_list_item).collect::<Vec<ListItem>>();
 
@@ -30,7 +29,6 @@ impl AppMode {
             list.append(item);
         }
         list.select_row(list_items.first());
-
         list.connect_row_activated(clone!(@strong apps => move |list, item| {
             Self::on_item_selected(&apps, list, item);
         }));
