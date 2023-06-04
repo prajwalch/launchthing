@@ -17,7 +17,12 @@ pub struct AppMode {
 
 impl AppMode {
     pub fn new() -> Self {
-        let apps = get_installed_apps();
+        let apps = gio::AppInfo::all()
+            .iter()
+            .filter(|app| app.icon().is_some() && app.should_show())
+            .cloned()
+            .collect::<Vec<gio::AppInfo>>();
+
         let list = gtk::ListBox::new();
         let list_items = create_and_append_list_items(&apps, &list);
 
@@ -116,14 +121,6 @@ impl AppMode {
         }
         list.activate_action("window.close", None).unwrap();
     }
-}
-
-fn get_installed_apps() -> Vec<gio::AppInfo> {
-    gio::AppInfo::all()
-        .iter()
-        .filter(|app| app.icon().is_some() && app.should_show())
-        .cloned()
-        .collect::<Vec<gio::AppInfo>>()
 }
 
 fn create_and_append_list_items(apps: &[gio::AppInfo], list: &gtk::ListBox) -> Vec<ListItem> {
