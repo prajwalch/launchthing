@@ -1,0 +1,118 @@
+name: CICD
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ '*' ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  format_source_code:
+    name: Format the source code and check for error too
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup | Install rustfmt
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - run: cargo fmt -- --check
+
+  crate_metadata:
+    name: Extract crate metadata
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.metadata.outputs.version }}
+
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+
+      - id: metadata
+        run: |
+          cargo metadata --no-deps --format-version 1 | jq -r '"version=" + .packages[0].version' | tee -a $GITHUB_OUTPUT
+
+  build:
+    name: ${{ matrix.target }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: crate_metadata
+    strategy:
+      matrix:
+        include:
+          - { target: aarch64-pc-windows-msvc, os: windows-latest }
+          - { target: aarch64-unknown-linux-gnu, os: ubuntu-latest }
+          - { target: arm-linux-androideabi, os: ubuntu-latest }
+          - { target: arm-unknown-linux-gnueabihf, os: ubuntu-latest }
+          - { target: arm-unknown-linux-musleabihf, os: ubuntu-latest }
+          - { target: armv7-linux-androideabi, os: ubuntu-latest }
+          - { target: i686-pc-windows-msvc, os: windows-latest }
+          - { target: i686-unknown-linux-gnu, os: ubuntu-latest }
+          - { target: i686-unknown-linux-musl, os: ubuntu-latest }
+          - { target: x86_64-pc-windows-gnu, os: windows-latest }
+          - { target: x86_64-pc-windows-msvc, os: windows-latest }
+          - { target: x86_64-unknown-linux-gnu, os: ubuntu-latest }
+          - { target: x86_64-unknown-linux-musl, os: ubuntu-latest }
+    env:
+      PKG_BASENAME: launchthing-v${{ needs.crate_metadata.outputs.version }}-${{ matrix.target }}
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup | Set RUSTFLAGS to build static binary
+        if: matrix.target != 'aarch64-unknown-linux-gnu'
+        run: echo "RUSTFLAGS=-C target-feature=+crt-static" >> $GITHUB_ENV
+
+      - name: Setup | Install rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Setup | Install cross [Linux]
+        uses: taiki-e/install-action@v2.4.2
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          tool: cross
+
+      - name: Build | Build with cargo
+        if: matrix.os != 'ubuntu-latest'
+        run: cargo build --locked --release --target ${{ matrix.target }}
+
+      - name: Build | Build with cross
+        if: matrix.os == 'ubuntu-latest'
+        run: cross build --locked --release --target ${{ matrix.target }}
+
+      - name: Post build | Prepare artifact [windows]
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: |
+          ARCHIVE_NAME="${{ env.PKG_BASENAME }}.zip"
+          7z a $ARCHIVE_NAME target/${{ matrix.target }}/release/lll.exe
+          echo "PKG_NAME=$ARCHIVE_NAME" >> $GITHUB_ENV
+
+      - name: Post build | Prepare artifact [linux]
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          ARCHIVE_NAME="${{ env.PKG_BASENAME }}.tar.xz"
+          tar -cJvf $ARCHIVE_NAME --directory=target/${{ matrix.target }}/release lll
+          echo "PKG_NAME=$ARCHIVE_NAME" >> $GITHUB_ENV
+
+      - name: Release | Upload a artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: ${{ env.PKG_NAME }}
+          path: ${{ env.PKG_NAME }}
+
+      - name: Release | Release new version if new tag is pushed
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ${{ env.PKG_NAME }}
