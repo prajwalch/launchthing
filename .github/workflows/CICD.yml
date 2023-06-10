@@ -64,7 +64,7 @@ jobs:
       - name: Setup | Install prerequisites
         if: matrix.os == 'ubuntu-latest'
         run: |
-          sudo apt get-update -y && sudo apt install libgtk-4-dev libglib2.0-dev build-essential
+          sudo apt-get update -y && sudo apt install libgtk-4-dev libglib2.0-dev build-essential
 
       - name: Setup | Install rust toolchain
         uses: dtolnay/rust-toolchain@stable
