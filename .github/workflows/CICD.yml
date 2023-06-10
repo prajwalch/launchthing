@@ -73,12 +73,11 @@ jobs:
 
       - name: Setup | Install cross
         uses: taiki-e/install-action@v2.4.2
-        if: matrix.os == 'ubuntu-latest'
         with:
           tool: cross
 
       - name: Build | Build with cross
-        run: cross build --locked --release --target ${{ matrix.target }}
+        run: cargo build --locked --release --target ${{ matrix.target }}
 
       - name: Post build | Prepare artifact
         shell: bash
