@@ -71,7 +71,7 @@ jobs:
           tool: cross
 
       - name: Build | Build with cross
-        run: cargo build --locked --release --target ${{ matrix.target }}
+        run: cross build --locked --release --target ${{ matrix.target }}
 
       - name: Post build | Prepare artifact
         shell: bash
