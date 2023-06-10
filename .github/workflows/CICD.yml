@@ -47,7 +47,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - { target: arm-unknown-linux-musleabihf, os: ubuntu-latest }
           - { target: x86_64-unknown-linux-gnu, os: ubuntu-latest }
           - { target: x86_64-unknown-linux-musl, os: ubuntu-latest }
     env:
