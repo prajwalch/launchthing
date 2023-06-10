@@ -6,13 +6,14 @@ https://github.com/PrajwalCH/launchthing/assets/42384293/3617055e-48a9-4d8a-b50f
 
 ## Install
 
-Prebuilt binaries are not available for now as the project is in early development phase.
+Prebuilt binaries are not available for now as the project is in the early development phase.
 Consider [building it from source](#building-from-source).
 
 ## Building from source
 
-To build the project you must have stable [rust v1.69.0+ installed](https://www.rust-lang.org/tools/install)
-(plus [dependencies](#dependencies)). Once you have all the necessary things installed you can clone the source code and start to build it.
+To build the project, you must have stable [rust v1.69.0+ installed](https://www.rust-lang.org/tools/install)
+(plus [dependencies](#dependencies)).
+Once you have all the necessary things installed, you can clone the source code and start to build it.
 
 ```sh
 $ git clone https://github.com/PrajwalCH/launchthing
