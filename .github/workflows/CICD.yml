@@ -75,30 +75,16 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
-      - name: Setup | Install cross [Linux]
+      - name: Setup | Install cross
         uses: taiki-e/install-action@v2.4.2
         if: matrix.os == 'ubuntu-latest'
         with:
           tool: cross
 
-      - name: Build | Build with cargo
-        if: matrix.os != 'ubuntu-latest'
-        run: cargo build --locked --release --target ${{ matrix.target }}
-
       - name: Build | Build with cross
-        if: matrix.os == 'ubuntu-latest'
         run: cross build --locked --release --target ${{ matrix.target }}
 
-      - name: Post build | Prepare artifact [windows]
-        if: matrix.os == 'windows-latest'
-        shell: bash
-        run: |
-          ARCHIVE_NAME="${{ env.PKG_BASENAME }}.zip"
-          7z a $ARCHIVE_NAME target/${{ matrix.target }}/release/lll.exe
-          echo "PKG_NAME=$ARCHIVE_NAME" >> $GITHUB_ENV
-
-      - name: Post build | Prepare artifact [linux]
-        if: matrix.os == 'ubuntu-latest'
+      - name: Post build | Prepare artifact
         shell: bash
         run: |
           ARCHIVE_NAME="${{ env.PKG_BASENAME }}.tar.xz"
